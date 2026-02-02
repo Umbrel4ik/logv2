@@ -1,0 +1,4308 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>LOGISTIK</title>
+  <style>
+    :root{
+      --bg:#060607;
+      --card:#0c0c10;
+      --stroke:rgba(255,255,255,.08);
+      --stroke2:rgba(255,255,255,.12);
+      --text:#f4f4f6;
+      --muted:rgba(255,255,255,.70);
+      --muted2:rgba(255,255,255,.55);
+      --accent:#ffb000;
+      --accent2:#ff9a00;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --shadow2: 0 10px 30px rgba(0,0,0,.45);
+      --radius:28px;
+      --radius2:18px;
+      --pill:999px;
+    }
+
+    *{box-sizing:border-box}
+    html, body { height: 100%; }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color:var(--text);
+      background: #060607;
+      overflow-x:hidden;
+      position: relative;
+    }
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(180deg, #070708 0%, #060607 45%, #050506 100%);
+      transform: translateZ(0);
+    }
+
+    .vignette{ display:none; }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:50;
+      padding:22px 0;
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.04);
+    }
+
+    .container{
+      width:min(1240px, calc(100% - 48px));
+      margin:0 auto;
+      position:relative;
+      z-index:1;
+    }
+
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+
+    .nav-right{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-left:auto;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      font-size:18px;
+      opacity:.95;
+    }
+
+    .nav-center{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex:1;
+      justify-content:center;
+    }
+
+    .pill{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.88);
+      padding:10px 16px;
+      border-radius: var(--pill);
+      font-size:13px;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+      font-weight:700;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      white-space:nowrap;
+    }
+    .pill:hover{ transform: translateY(-1px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.26); }
+    .pill:active{ transform: translateY(0px); }
+    .pill.is-active{
+      border-color: rgba(255,176,0,.40);
+      background: rgba(255,176,0,.10);
+      color: rgba(255,255,255,.92);
+    }
+
+    .cta{
+      border:0;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      color:#0b0b0d;
+      padding:11px 18px;
+      border-radius: var(--radius2);
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      font-size:13px;
+      box-shadow: 0 14px 35px rgba(255,176,0,.18), 0 14px 40px rgba(0,0,0,.35);
+      cursor:pointer;
+      transition: transform .15s ease, filter .15s ease;
+      white-space:nowrap;
+    }
+    .cta:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+    .cta:active{ transform: translateY(0px); }
+
+    /* ====== ВКЛАДКИ (страницы внутри файла) ====== */
+    .page{
+      display:none;
+      animation: pageIn .22s ease;
+    }
+    .page.is-active{ display:block; }
+    @keyframes pageIn{
+      from { opacity:0; transform: translateY(6px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* HERO */
+    .hero{ padding:46px 0 26px; }
+
+    .hero-card{
+      position:relative;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow: var(--shadow);
+      padding:54px 54px;
+      overflow:hidden;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap:42px;
+      align-items:center;
+    }
+
+    .kicker{
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.72);
+      margin-bottom:14px;
+      font-weight:800;
+    }
+
+    .h1{
+      font-size:64px;
+      line-height:.92;
+      letter-spacing:-.02em;
+      margin:0 0 14px;
+      text-transform:uppercase;
+      font-weight:950;
+    }
+
+    .lead{
+      color: rgba(255,255,255,.72);
+      font-size:15px;
+      line-height:1.55;
+      max-width:560px;
+      margin: 0 0 22px;
+      font-weight:500;
+    }
+
+    .hero-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:12px 18px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      color:#0b0b0d;
+      font-weight:900;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+      font-size:12.5px;
+      border:0;
+      box-shadow: 0 16px 40px rgba(255,176,0,.18), 0 18px 45px rgba(0,0,0,.40);
+      cursor:pointer;
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .hero-btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+    .hero-btn:active{ transform: translateY(0px); }
+
+    .btn-secondary{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 18px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.09);
+      color: rgba(255,255,255,.92);
+      border:1px solid rgba(255,255,255,.16);
+      font-weight:900;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+      font-size:12.5px;
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .btn-secondary:hover{ transform: translateY(-1px); background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.22); }
+    .btn-secondary:active{ transform: translateY(0); }
+
+    .hero-image{
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      overflow:hidden;
+      box-shadow: var(--shadow2);
+      background: #111;
+      position:relative;
+      min-height:270px;
+    }
+    .hero-image img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: contrast(1.05) saturate(1.04) brightness(.95);
+      transform: scale(1.03);
+    }
+    .hero-image:after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.18));
+      pointer-events:none;
+    }
+
+    /* SECTION */
+    .section{ padding:34px 0 54px; }
+    .section-title{
+      text-align:center;
+      margin: 18px 0 6px;
+      font-size:38px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      font-weight:950;
+    }
+    .section-sub{
+      text-align:center;
+      color: rgba(255,255,255,.70);
+      margin: 0 auto 24px;
+      max-width:760px;
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    /* WHY US cards */
+    .features{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:26px;
+      margin-top:26px;
+    }
+    .feature{
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow: var(--shadow2);
+      padding:28px 26px 24px;
+      min-height:170px;
+      position:relative;
+    }
+    .icon{
+      width:44px; height:44px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      display:grid;
+      place-items:center;
+      box-shadow: 0 16px 36px rgba(255,176,0,.18), 0 16px 40px rgba(0,0,0,.35);
+      margin-bottom:14px;
+    }
+    .feature h3{
+      margin:0 0 10px;
+      text-transform:uppercase;
+      letter-spacing:.02em;
+      font-size:22px;
+      font-weight:950;
+      color: rgba(255,255,255,.95);
+    }
+    .feature p{
+      margin:0;
+      color: rgba(255,255,255,.72);
+      font-size:14px;
+      line-height:1.7;
+      max-width:320px;
+    }
+
+    /* DELIVERY COST block */
+    .big-card{
+      margin-top:26px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow: var(--shadow);
+      padding:34px 34px;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:26px;
+      align-items:center;
+    }
+
+    .big-title{
+      margin:0 0 10px;
+      font-size:44px;
+      line-height:1.02;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      font-weight:950;
+    }
+    .big-text{
+      margin:0 0 18px;
+      color: rgba(255,255,255,.72);
+      font-size:14px;
+      line-height:1.7;
+      max-width:620px;
+    }
+
+    .big-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 18px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      color:#0b0b0d;
+      font-weight:950;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+      font-size:12.5px;
+      border:0;
+      box-shadow: 0 16px 40px rgba(255,176,0,.18), 0 18px 45px rgba(0,0,0,.40);
+      cursor:pointer;
+      transition: transform .15s ease, filter .15s ease;
+      width:fit-content;
+    }
+    .big-btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+    .big-btn:active{ transform: translateY(0px); }
+
+    .badge{
+      border-radius: 20px;
+      background: rgba(0,0,0,.28);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow2);
+      padding:20px 20px;
+      max-width:420px;
+      justify-self:end;
+    }
+    .badge-top{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+      color: rgba(255,255,255,.78);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:900;
+      font-size:12px;
+    }
+    .dot{
+      width:9px; height:9px;
+      border-radius:999px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      box-shadow: 0 10px 20px rgba(255,176,0,.18);
+    }
+    .badge-name{
+      font-weight:950;
+      font-size:18px;
+      letter-spacing:.01em;
+      margin:0 0 12px;
+    }
+    .stars{
+      display:flex;
+      gap:6px;
+      margin: 0 0 10px;
+    }
+    .star{
+      width:18px; height:18px;
+      display:inline-grid;
+      place-items:center;
+      border-radius:6px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+    }
+    .star svg{display:block}
+    .badge-bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      color: rgba(255,255,255,.70);
+      font-size:13px;
+    }
+    .badge-bottom .muted{ color: rgba(255,255,255,.62); }
+
+    /* ===== Общий блок "страница с шагами" (О компании / Как мы работаем) ===== */
+    .page-wrap{ padding:46px 0 54px; }
+    .page-card{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.09);
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      box-shadow: var(--shadow);
+      padding:54px 54px;
+    }
+    .page-kicker{
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.72);
+      margin:0 0 12px;
+      font-weight:900;
+    }
+    .page-title{
+      margin:0 0 14px;
+      font-size:64px;
+      line-height:.92;
+      letter-spacing:-.02em;
+      text-transform:uppercase;
+      font-weight:950;
+    }
+    .page-text{
+      margin:0 0 24px;
+      color: rgba(255,255,255,.72);
+      font-size:14px;
+      line-height:1.75;
+      max-width:980px;
+      font-weight:500;
+    }
+    .page-subtitle{
+      margin: 0 0 14px;
+      color: rgba(255,255,255,.88);
+      font-weight:950;
+      letter-spacing:.02em;
+      font-size:14px;
+    }
+
+    .steps{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin:0;
+      padding:0;
+      list-style:none;
+      max-width:980px;
+    }
+    .step{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      padding:14px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.18);
+      box-shadow: 0 16px 44px rgba(0,0,0,.35);
+    }
+    .step-num{
+      width:34px;
+      height:34px;
+      border-radius: 12px;
+      display:grid;
+      place-items:center;
+      font-weight:950;
+      color:#0b0b0d;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      flex:0 0 auto;
+      box-shadow: 0 14px 34px rgba(255,176,0,.14), 0 18px 44px rgba(0,0,0,.35);
+      margin-top:2px;
+    }
+    .step h4{
+      margin:0 0 4px;
+      font-size:14px;
+      text-transform:uppercase;
+      letter-spacing:.02em;
+      font-weight:950;
+      color: rgba(255,255,255,.95);
+    }
+    .step p{
+      margin:0;
+      color: rgba(255,255,255,.70);
+      font-size:13px;
+      line-height:1.65;
+      font-weight:500;
+    }
+
+    .page-actions{
+      display:flex;
+      gap:12px;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+
+    /* FAQ */
+    .faq-wrap{
+      margin-top:44px;
+      padding: 10px 0 24px;
+    }
+    .mini-kicker{
+      text-align:center;
+      color: rgba(255,255,255,.66);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-weight:900;
+      font-size:12px;
+      margin:0 0 10px;
+    }
+    .faq-title{
+      text-align:center;
+      margin:0 0 10px;
+      font-size:44px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      font-weight:950;
+    }
+    .faq-sub{
+      text-align:center;
+      color: rgba(255,255,255,.68);
+      margin: 0 auto 22px;
+      max-width:780px;
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .faq{
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    details.faq-item{
+      border-top:1px solid rgba(255,255,255,.08);
+      padding:0;
+      margin:0;
+    }
+    details.faq-item:first-child{ border-top:0; }
+
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:18px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      user-select:none;
+      outline:none;
+    }
+    summary::-webkit-details-marker{display:none}
+
+    .q{
+      font-weight:900;
+      color: rgba(255,255,255,.92);
+      font-size:14px;
+    }
+
+    .toggle{
+      width:32px;
+      height:32px;
+      position:relative;
+      flex:0 0 auto;
+      background: transparent;
+      border:1px solid transparent;
+      border-radius:10px;
+      cursor:pointer;
+    }
+    .toggle::before,
+    .toggle::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:14px;
+      height:2px;
+      border-radius:2px;
+      background: rgba(255,255,255,.92);
+      transform: translate(-50%, -50%);
+      transition: transform .22s ease, background .22s ease;
+    }
+    .toggle::after{ transform: translate(-50%, -50%) rotate(90deg); }
+
+    details[open] .toggle{
+      background: rgba(255,176,0,.08);
+      border-color: rgba(255,176,0,.16);
+    }
+    details[open] .toggle::before,
+    details[open] .toggle::after{ background: rgba(255,176,0,.95); }
+    details[open] .toggle::before{ transform: translate(-50%, -50%) rotate(45deg); }
+    details[open] .toggle::after{ transform: translate(-50%, -50%) rotate(-45deg); }
+
+    .a-wrap{
+      display:grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows .34s ease, opacity .22s ease;
+    }
+    details[open] .a-wrap{
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .a-wrap > .a{
+      overflow:hidden;
+      padding: 0 18px 18px;
+      color: rgba(255,255,255,.70);
+      font-size:13px;
+      line-height:1.7;
+      max-width:980px;
+      transform: translateY(-6px);
+      transition: transform .34s ease;
+    }
+    details[open] .a-wrap > .a{
+      padding-top: 10px;
+      transform: translateY(0);
+    }
+
+    /* responsive */
+    @media (max-width: 980px){
+      .nav-center{ display:none; }
+      .hero-card{ padding:34px 26px; }
+      .hero-grid{ grid-template-columns: 1fr; }
+      .h1{ font-size:52px; }
+      .features{ grid-template-columns:1fr; }
+      .hero-image{ min-height:220px; }
+      .big-card{ grid-template-columns:1fr; }
+      .badge{ justify-self:start; width:100%; max-width:520px; }
+      .big-title, .faq-title{ font-size:38px; }
+
+      .page-card{ padding:34px 26px; }
+      .page-title{ font-size:52px; }
+    }
+    @media (max-width: 560px){
+      .container{ width: min(1240px, calc(100% - 26px)); }
+      .h1{ font-size:44px; }
+      .big-title, .faq-title{ font-size:34px; }
+      .page-title{ font-size:44px; }
+    }
+
+    /* ====== MODAL (ОБЩЕЕ) ====== */
+    .modal{
+      position:fixed;
+      inset:0;
+      z-index:999;
+      display:none;
+    }
+    .modal.is-open{ display:block; }
+
+    .modal-backdrop{
+      position:absolute;
+      inset:0;
+      background: rgba(0,0,0,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .modal-dialog{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%, -50%);
+      width: min(980px, calc(100% - 40px));
+      max-height: min(86vh, 820px);
+
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(18,18,20,.92) 0%, rgba(10,10,12,.86) 100%);
+      box-shadow: 0 30px 90px rgba(0,0,0,.72);
+
+      overflow:hidden;
+    }
+
+    .modal-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+
+      padding:18px 18px 14px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+    }
+
+    .modal-title{
+      margin:0;
+      font-size:20px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:950;
+    }
+
+    .modal-sub{
+      margin:6px 0 0;
+      color: rgba(255,255,255,.68);
+      font-size:13px;
+      line-height:1.55;
+      max-width:740px;
+    }
+
+    .modal-close{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.16);
+      cursor:pointer;
+      position:relative;
+      flex:0 0 auto;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .modal-close:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.22);
+    }
+    .modal-close:active{ transform: translateY(0); }
+
+    .modal-close::before,
+    .modal-close::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:18px;
+      height:2px;
+      border-radius:2px;
+      background: rgba(255,255,255,.92);
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+    .modal-close::after{
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    .modal-body{ padding:14px 18px 18px; }
+
+    .tariffs-dialog{ width: min(1120px, calc(100% - 40px)); }
+    .tariffs-body{
+      overflow:auto;
+      max-height: calc(min(86vh, 820px) - 76px);
+    }
+
+    .modal-section{ margin: 14px 0 18px; }
+    .modal-h{
+      margin: 0 0 10px;
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.78);
+      font-weight:900;
+    }
+
+    .price-table{
+      width:100%;
+      border-collapse: separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.40);
+    }
+    .price-table thead th{
+      text-align:left;
+      padding:12px 14px;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.78);
+      background: rgba(255,255,255,.06);
+      border-bottom:1px solid rgba(255,255,255,.10);
+      font-weight:900;
+    }
+    .price-table tbody td{
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      color: rgba(255,255,255,.86);
+      font-size:14px;
+    }
+    .price-table tbody tr:last-child td{ border-bottom:0; }
+    .price-table td:last-child,
+    .price-table th:last-child{
+      text-align:right;
+      white-space:nowrap;
+      font-weight:900;
+    }
+
+    .tariffs-body::-webkit-scrollbar{ width: 10px; }
+    .tariffs-body::-webkit-scrollbar-thumb{
+      background: rgba(255,176,0,.45);
+      border-radius: 999px;
+    }
+    .tariffs-body::-webkit-scrollbar-track{
+      background: rgba(255,255,255,.06);
+      border-radius: 999px;
+    }
+
+    .contact-actions{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      padding-top:14px;
+    }
+
+    .contact-btn{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      padding:16px 16px;
+      border-radius: 16px;
+      font-weight:950;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:13px;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: 0 16px 44px rgba(0,0,0,.40);
+      transition: transform .14s ease, filter .14s ease, background .14s ease, border-color .14s ease;
+      user-select:none;
+    }
+    .contact-btn:hover{ transform: translateY(-1px); filter: brightness(1.01); }
+    .contact-btn:active{ transform: translateY(0px); }
+
+    .contact-btn.primary{
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      color:#0b0b0d;
+      border-color: rgba(255,176,0,.35);
+      box-shadow: 0 14px 35px rgba(255,176,0,.16), 0 18px 55px rgba(0,0,0,.55);
+    }
+
+    .contact-btn.secondary{
+      background: rgba(255,255,255,.09);
+      color: rgba(255,255,255,.92);
+      border-color: rgba(255,255,255,.16);
+    }
+    .contact-btn.secondary:hover{
+      background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.22);
+    }
+
+    /* ====== CONTACTS PAGE (как на скрине) ====== */
+    .contacts-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:18px;
+      align-items:stretch;
+      margin-top: 18px;
+    }
+
+    .contacts-panel{
+      border-radius: 22px;
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow2);
+      padding:18px 18px;
+    }
+
+    .contacts-h{
+      margin:0 0 12px;
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.88);
+      font-weight:950;
+    }
+
+    .contact-list{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .contact-row{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      padding:14px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      box-shadow: 0 16px 44px rgba(0,0,0,.35);
+    }
+
+    .contact-ico{
+      width:44px;
+      height:44px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      display:grid;
+      place-items:center;
+      box-shadow: 0 16px 36px rgba(255,176,0,.16), 0 16px 40px rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+
+    .contact-meta{ min-width:0; }
+
+    .contact-name{
+      margin:0 0 2px;
+      font-size:14px;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.02em;
+      color: rgba(255,255,255,.95);
+    }
+
+    .contact-val{
+      margin:0;
+      color: rgba(255,255,255,.70);
+      font-size:13px;
+      line-height:1.55;
+      font-weight:500;
+    }
+
+    .contact-link{
+      color: rgba(255,255,255,.82);
+      text-decoration:none;
+      border-bottom: 1px dashed rgba(255,176,0,.35);
+      padding-bottom:1px;
+    }
+    .contact-link:hover{
+      color: rgba(255,255,255,.95);
+      border-bottom-color: rgba(255,176,0,.60);
+    }
+
+    /* MAP */
+    .map-panel{
+      position:relative;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      min-height: 420px;
+    }
+
+    .map-panel iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+      filter: contrast(1.05) saturate(1.02) brightness(.92);
+    }
+
+    .map-open{
+      position:absolute;
+      left:14px;
+      bottom:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 12px;
+      border-radius: 12px;
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.88);
+      text-decoration:none;
+      font-weight:900;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      font-size:11px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .map-open:hover{
+      background: rgba(0,0,0,.62);
+      border-color: rgba(255,255,255,.20);
+    }
+
+    /* responsive */
+    @media (max-width: 980px){
+      .contacts-grid{ grid-template-columns: 1fr; }
+      .map-panel{ min-height: 340px; }
+    }
+
+    /* ====== SERVICES PAGE (как на скрине) ====== */
+    .services-grid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:18px;
+      margin-top: 18px;
+      align-items: stretch;
+    }
+
+    .service-col{
+      border-radius: 22px;
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow2);
+      padding:18px 18px;
+      min-height: 420px;
+    }
+
+    .service-col-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .service-ico{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      display:grid;
+      place-items:center;
+      box-shadow: 0 16px 36px rgba(255,176,0,.16), 0 16px 40px rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+
+    .service-col-title{
+      margin:0;
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.92);
+      font-weight:950;
+      line-height:1.2;
+    }
+
+    .service-list{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .service-item{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:12px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      box-shadow: 0 16px 44px rgba(0,0,0,.35);
+    }
+
+    .service-bullet{
+      width:10px;
+      height:10px;
+      margin-top:5px;
+      border-radius:999px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      box-shadow: 0 10px 20px rgba(255,176,0,.16);
+      flex:0 0 auto;
+    }
+
+    .service-text{
+      margin:0;
+      color: rgba(255,255,255,.74);
+      font-size:13px;
+      line-height:1.55;
+      font-weight:600;
+    }
+
+    .service-link{
+      margin-left:auto;
+      color: rgba(255,255,255,.82);
+      opacity:.9;
+      font-weight:900;
+      flex:0 0 auto;
+    }
+
+    /* responsive */
+    @media (max-width: 1100px){
+      .services-grid{ grid-template-columns: repeat(2, 1fr); }
+      .service-col{ min-height: unset; }
+    }
+    @media (max-width: 560px){
+      .services-grid{ grid-template-columns: 1fr; }
+    }
+
+    /* ====== SERVICE DETAIL: Military ====== */
+    .service-detail{ overflow:hidden; }
+
+    .mil-grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:18px;
+      margin-top: 18px;
+      align-items:stretch;
+    }
+
+    .mil-photo{
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      min-height: 320px;
+    }
+    .mil-photo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: contrast(1.05) saturate(1.03) brightness(.92);
+      transform: scale(1.03);
+    }
+
+    .mil-card{
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      box-shadow: var(--shadow2);
+      padding:18px;
+    }
+
+    .mil-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .mil-text p{
+      margin:0 0 12px;
+      color: rgba(255,255,255,.72);
+      font-size:13.5px;
+      line-height:1.75;
+      font-weight:600;
+    }
+    .mil-text p:last-child{ margin-bottom:0; }
+
+    .mil-split{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:14px;
+      margin-top: 18px;
+    }
+    .mil-h{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      font-weight:950;
+    }
+    .mil-sub{
+      margin:0;
+      color: rgba(255,255,255,.66);
+      font-size:12.5px;
+      line-height:1.6;
+      font-weight:600;
+    }
+
+    .mil-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .mil-item{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:14px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      box-shadow: 0 16px 44px rgba(0,0,0,.35);
+    }
+    .mil-check{
+      width:34px; height:34px;
+      border-radius: 12px;
+      display:grid;
+      place-items:center;
+      font-weight:950;
+      color:#0b0b0d;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      box-shadow: 0 14px 34px rgba(255,176,0,.14), 0 18px 44px rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+    .mil-item p{
+      margin:0;
+      color: rgba(255,255,255,.78);
+      font-size:13.5px;
+      line-height:1.65;
+      font-weight:650;
+    }
+
+    .mil-steps{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .mil-step{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:14px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.18);
+      box-shadow: 0 16px 44px rgba(0,0,0,.35);
+    }
+    .mil-num{
+      width:34px; height:34px;
+      border-radius: 12px;
+      display:grid;
+      place-items:center;
+      font-weight:950;
+      color:#0b0b0d;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      box-shadow: 0 14px 34px rgba(255,176,0,.14), 0 18px 44px rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+    .mil-step h4{
+      margin:0 0 4px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      font-weight:950;
+      color: rgba(255,255,255,.92);
+    }
+    .mil-step p{
+      margin:0;
+      color: rgba(255,255,255,.70);
+      font-size:13px;
+      line-height:1.65;
+      font-weight:600;
+    }
+
+    .mil-foot{
+      margin: 16px 0 0;
+      color: rgba(255,255,255,.70);
+      font-size:13.5px;
+      line-height:1.75;
+      font-weight:600;
+    }
+
+    .service-item{ cursor:pointer; }
+    .service-item:focus{
+      outline: none;
+      border-color: rgba(255,176,0,.30);
+      background: rgba(255,176,0,.06);
+    }
+
+    @media (max-width: 980px){
+      .mil-grid{ grid-template-columns:1fr; }
+      .mil-split{ flex-direction:column; align-items:flex-start; }
+    }
+
+    /* ===== BURGER ===== */
+    .burger{
+      display:none;
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.16);
+      cursor:pointer;
+      position:relative;
+      transition: background .15s ease, border-color .15s ease;
+    }
+    .burger:hover{
+      background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.24);
+    }
+
+    .burger span{
+      position:absolute;
+      left:50%;
+      width:20px;
+      height:2px;
+      background:#fff;
+      border-radius:2px;
+      transform: translateX(-50%);
+      transition: .25s ease;
+    }
+    .burger span:nth-child(1){ top:14px; }
+    .burger span:nth-child(2){ top:21px; }
+    .burger span:nth-child(3){ top:28px; }
+
+    /* активное состояние (крестик) */
+    .burger.is-open span:nth-child(1){
+      top:21px;
+      transform: translateX(-50%) rotate(45deg);
+    }
+    .burger.is-open span:nth-child(2){
+      opacity:0;
+    }
+    .burger.is-open span:nth-child(3){
+      top:21px;
+      transform: translateX(-50%) rotate(-45deg);
+    }
+
+    /* ===== MOBILE MENU ===== */
+    .mobile-menu{
+      position:fixed;
+      inset:0;
+      z-index:200;
+      display:none;
+    }
+    .mobile-menu.is-open{ display:block; }
+
+    .mobile-backdrop{
+      position:absolute;
+      inset:0;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(8px);
+    }
+
+    .mobile-panel{
+      position:absolute;
+      right:0;
+      top:0;
+      height:100%;
+      width:min(320px, 86%);
+      background: linear-gradient(180deg, rgba(18,18,20,.96), rgba(10,10,12,.92));
+      border-left:1px solid rgba(255,255,255,.12);
+      padding:26px 20px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      box-shadow: -20px 0 60px rgba(0,0,0,.6);
+    }
+
+    .mobile-panel button{
+      width:100%;
+      justify-content:center;
+    }
+
+    /* показать бургер на мобиле */
+    @media (max-width: 980px){
+      .burger{ display:block; }
+    }
+
+    /* ===== Mobile adaptive (Android/iPhone) ===== */
+
+    /* iPhone safe-area (чёлка) + корректные отступы */
+    :root{
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+
+      /* универсальные адаптивные размеры */
+      --container-pad: clamp(14px, 4vw, 28px);
+      --section-pad-y: clamp(18px, 5vw, 44px);
+    }
+
+    /* чтобы элементы нормально ужимались на мобилке */
+    *{ min-width: 0; }
+    img{ max-width: 100%; height: auto; display:block; }
+
+    /* контейнеры: авто-подстройка под диагональ и safe-area */
+    .container,
+    .page-wrap{
+      padding-left: calc(var(--container-pad) + var(--safe-left));
+      padding-right: calc(var(--container-pad) + var(--safe-right));
+    }
+
+    /* если есть фикс/липкая шапка — добавь ей safe-top */
+    header,
+    .site-header,
+    .topbar{
+      padding-top: var(--safe-top);
+    }
+
+    /* плавная типографика (без резких скачков) */
+    .hero-title, h1{
+      font-size: clamp(28px, 7vw, 56px);
+      line-height: 1.06;
+    }
+    .page-title, h2{
+      font-size: clamp(22px, 5.4vw, 40px);
+      line-height: 1.1;
+    }
+    p, .text, .muted{
+      font-size: clamp(14px, 3.6vw, 16px);
+      line-height: 1.55;
+    }
+
+    /* кнопки на мобилке удобнее: на всю ширину */
+    @media (max-width: 560px){
+      .hero-actions,
+      .mil-actions,
+      .actions{
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      button, .btn, .hero-btn, .btn-secondary, a.btn{
+        width: 100%;
+      }
+    }
+
+    /* на очень узких экранах не ломаем шапку/меню */
+    @media (max-width: 380px){
+      .nav-cta, .topbar-cta, .header-cta{
+        display: none !important;
+      }
+    }
+
+    /* ===== FIX: "Наши тарифы" (модалка/таблица) на мобилках ===== */
+
+    /* 1) Само окно с тарифами: пусть скроллится внутри и не вылезает за экран */
+    .modal,
+    .popup,
+    .dialog,
+    .tariffs-modal,
+    #tariffsModal,
+    #modalTariffs{
+      max-width: min(920px, calc(100vw - 28px));
+    }
+
+    .modal .modal-body,
+    .popup .popup-body,
+    .dialog .dialog-body,
+    #tariffsModal .modal-body,
+    #modalTariffs .modal-body,
+    .tariffs-modal .modal-body{
+      max-height: calc(100svh - 140px);
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 2) Таблицы в тарифах: фиксируем раскладку, включаем переносы */
+    .modal table,
+    .popup table,
+    .dialog table,
+    .tariffs-modal table,
+    #tariffsModal table,
+    #modalTariffs table{
+      width: 100%;
+      table-layout: fixed;       /* важно: чтобы ячейки умели сжиматься */
+      border-collapse: collapse;
+    }
+
+    /* 3) Ячейки: разрешаем переносы и ломаем длинные слова/строки */
+    .modal th, .modal td,
+    .popup th, .popup td,
+    .dialog th, .dialog td,
+    .tariffs-modal th, .tariffs-modal td,
+    #tariffsModal th, #tariffsModal td,
+    #modalTariffs th, #modalTariffs td{
+      white-space: normal;
+      overflow-wrap: anywhere;   /* ломает длинные куски */
+      word-break: break-word;
+      min-width: 0;
+    }
+
+    /* 4) На телефонах делаем "услуга/цена" более компактно */
+    @media (max-width: 560px){
+      .modal th, .modal td,
+      .popup th, .popup td,
+      .dialog th, .dialog td,
+      .tariffs-modal th, .tariffs-modal td,
+      #tariffsModal th, #tariffsModal td,
+      #modalTariffs th, #modalTariffs td{
+        font-size: 14px;
+        line-height: 1.35;
+        padding: 12px 12px;
+      }
+
+      /* чтобы правая колонка не распирала: выравниваем и ограничиваем */
+      .modal td:last-child,
+      .popup td:last-child,
+      .dialog td:last-child,
+      .tariffs-modal td:last-child,
+      #tariffsModal td:last-child,
+      #modalTariffs td:last-child{
+        text-align: right;
+        font-weight: 700;
+      }
+    }
+
+    /* 5) Если где-то всё равно "распирает" — включаем горизонтальный скролл для таблицы */
+    .modal .table-wrap,
+    .popup .table-wrap,
+    .dialog .table-wrap,
+    .tariffs-modal .table-wrap,
+    #tariffsModal .table-wrap,
+    #modalTariffs .table-wrap{
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* ===== FIX: длинные слова в HERO (ГРУЗОПЕРЕВОЗКИ) ===== */
+
+    /* разрешаем перенос и ломаем длинные слова */
+    .hero-title{
+      white-space: normal !important;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      hyphens: auto;
+      max-width: 100%;
+    }
+
+    /* если у тебя буквы растянуты (letter-spacing) — на мобилке уменьшаем */
+    @media (max-width: 560px){
+      .hero-title{
+        font-size: clamp(24px, 10vw, 44px) !important;
+        line-height: 1.03;
+        letter-spacing: .02em !important; /* если было больше — это поможет */
+      }
+    }
+
+    /* на совсем узких */
+    @media (max-width: 380px){
+      .hero-title{
+        font-size: clamp(22px, 11vw, 40px) !important;
+      }
+    }
+
+    /* ====== FIX MOBILE OVERFLOW (ВСТАВЬ В КОНЕЦ CSS) ====== */
+
+    /* 1) Контейнер: НЕЛЬЗЯ одновременно width:calc(100%-48px) и padding */
+    .container{
+      width: min(1240px, 100%) !important;
+      margin: 0 auto !important;
+      padding-left: calc(var(--container-pad, 16px) + env(safe-area-inset-left, 0px)) !important;
+      padding-right: calc(var(--container-pad, 16px) + env(safe-area-inset-right, 0px)) !important;
+    }
+
+    /* page-wrap НЕ должен добавлять ещё один слой паддингов */
+    .page-wrap{
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    /* 2) Любые “длинные слова” и заголовки — ломаем и переносим */
+    .h1, .page-title, .section-title, .big-title, .faq-title, .mil-h{
+      max-width: 100% !important;
+      white-space: normal !important;
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
+      hyphens: auto !important;
+    }
+
+    /* тексты внутри карточек тоже иногда вылезают */
+    .lead, .page-text, .service-text, .mil-text p, .mil-item p, .mil-step p, .contact-val, .a{
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
+      hyphens: auto !important;
+    }
+
+    /* 3) Карточки: на телефоне паддинги должны быть меньше, иначе всё “ломит” */
+    .hero-card, .page-card, .service-col, .contacts-panel, .mil-card, .badge{
+      padding: clamp(18px, 4.8vw, 34px) !important;
+    }
+
+    /* 4) Сетки: на мобиле — одна колонка, чтобы ничего не вылазило */
+    @media (max-width: 980px){
+      .hero-grid,
+      .big-card,
+      .contacts-grid,
+      .services-grid,
+      .mil-grid{
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* 5) Частая причина вылета: элементы не могут сжиматься */
+    .feature, .service-item, .contact-row, .mil-item, .mil-step{
+      min-width: 0 !important;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="vignette"></div>
+
+  <!-- TOPBAR / NAV -->
+  <header class="topbar">
+    <div class="container">
+      <div class="nav">
+        <div class="brand" id="brandHome" role="button" tabindex="0">
+          LOGISTIK
+        </div>
+
+        <nav class="nav-center" aria-label="Главное меню">
+          <button class="pill" id="tabHome" type="button">Главная</button>
+          <button class="pill" id="tabAbout" type="button">О компании</button>
+          <button class="pill" id="tabServices" type="button">Услуги</button>
+          <button class="pill" id="tabHow" type="button">Как мы работаем</button>
+          <button class="pill" id="tabContacts" type="button">Контакты</button>
+        </nav>
+
+        <div class="nav-right">
+        <button class="cta" id="openContactTop" type="button">Оставить заявку</button>
+
+        <button class="burger" id="burgerBtn" aria-label="Открыть меню" type="button">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====== PAGE: ГЛАВНАЯ ====== -->
+  <div class="page is-active" id="pageHome">
+    <main class="hero">
+      <div class="container">
+        <section class="hero-card">
+          <div class="hero-grid">
+            <div>
+              <div class="kicker">Логистика по Мурманской области и Российской Федерации</div>
+              <h1 class="h1">Грузоперевозки<br/>Склад и<br/>Доставка</h1>
+              <p class="lead">
+                Организуем перевозку “под ключ”: забор груза, склад, упаковка, доставка.
+                Работаем с юридическими и физическими лицами.
+              </p>
+              <button class="hero-btn" id="openTariffs" type="button">Наши тарифы</button>
+            </div>
+
+            <div class="hero-image" aria-label="Фото логистики">
+              <img
+                src="hero.jpg"
+                alt="Логистика и доставка"
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Почему выбирают нас</h2>
+        <p class="section-sub">
+          Работаем аккуратно, держим сроки и предлагаем понятные условия — без сюрпризов и скрытых доплат.
+        </p>
+
+        <div class="features">
+          <div class="feature">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L19 5.5V11.2C19 16 15.9 20.2 12 21.8C8.1 20.2 5 16 5 11.2V5.5L12 2Z"
+                      stroke="#0b0b0d" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3>Аккуратность</h3>
+            <p>
+              Бережно работаем с грузом: учитываем особенности, тип упаковки и условия перевозки —
+              от мелких коробов до крупногабарита.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22Z"
+                      stroke="#0b0b0d" stroke-width="2"/>
+                <path d="M12 6V12L16 14" stroke="#0b0b0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3>Точность</h3>
+            <p>
+              Планируем маршрут и согласуем этапы заранее. Доставляем в оговорённые сроки
+              и остаёмся на связи, если нужна оперативность.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 12C20 14.761 16.418 17 12 17C7.582 17 4 14.761 4 12"
+                      stroke="#0b0b0d" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 12C4 9.239 7.582 7 12 7C16.418 7 20 9.239 20 12Z"
+                      stroke="#0b0b0d" stroke-width="2"/>
+                <path d="M4 12V17C4 19.761 7.582 22 12 22C16.418 22 20 19.761 20 17V12"
+                      stroke="#0b0b0d" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Доступность</h3>
+            <p>
+              Прозрачные расчёты и адекватные тарифы под задачу. Предложим вариант,
+              который подходит по бюджету и срокам.
+            </p>
+          </div>
+        </div>
+
+        <div class="big-card">
+          <div>
+            <h3 class="big-title">Узнайте стоимость доставки</h3>
+            <p class="big-text">
+              Оставьте заявку — быстро рассчитаем цену с учётом маршрута, типа груза, объёма и
+              дополнительных услуг (упаковка, погрузка, хранение).
+            </p>
+            <button class="big-btn" id="openContactBottom" type="button">Узнать сейчас</button>
+          </div>
+
+          <aside class="badge" aria-label="Карточка ATI.SU">
+            <div class="badge-top">
+              <span class="dot" aria-hidden="true"></span>
+              <span>Участник ATI.SU</span>
+            </div>
+
+            <p class="badge-name">Д. С. Веста</p>
+
+            <div class="stars" aria-label="Рейтинг 5 из 5">
+              <span class="star" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 17.3L6.18 20.5L7.3 13.9L2.6 9.5L9.2 8.6L12 2.6L14.8 8.6L21.4 9.5L16.7 13.9L17.82 20.5L12 17.3Z"
+                        fill="#0b0b0d"/>
+                </svg>
+              </span>
+              <span class="star" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.3L6.18 20.5L7.3 13.9L2.6 9.5L9.2 8.6L12 2.6L14.8 8.6L21.4 9.5L16.7 13.9L17.82 20.5L12 17.3Z" fill="#0b0b0d"/></svg></span>
+              <span class="star" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.3L6.18 20.5L7.3 13.9L2.6 9.5L9.2 8.6L12 2.6L14.8 8.6L21.4 9.5L16.7 13.9L17.82 20.5L12 17.3Z" fill="#0b0b0d"/></svg></span>
+              <span class="star" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.3L6.18 20.5L7.3 13.9L2.6 9.5L9.2 8.6L12 2.6L14.8 8.6L21.4 9.5L16.7 13.9L17.82 20.5L12 17.3Z" fill="#0b0b0d"/></svg></span>
+              <span class="star" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 17.3L6.18 20.5L7.3 13.9L2.6 9.5L9.2 8.6L12 2.6L14.8 8.6L21.4 9.5L16.7 13.9L17.82 20.5L12 17.3Z" fill="#0b0b0d"/></svg></span>
+            </div>
+
+            <div class="badge-bottom">
+              <span><span class="muted">Паспорт:</span> ATI.SU</span>
+              <span class="muted">Код: 478 207</span>
+            </div>
+          </aside>
+        </div>
+
+        <div class="faq-wrap">
+          <p class="mini-kicker">Бесплатные консультации по телефону</p>
+          <h3 class="faq-title">Отвечаем на частые вопросы</h3>
+          <p class="faq-sub">
+            Если не нашли ответ — напишите или позвоните, мы уточним детали и предложим оптимальное решение.
+          </p>
+
+          <div class="faq" role="region" aria-label="Частые вопросы">
+            <details class="faq-item">
+              <summary>
+                <span class="q">Из чего складывается стоимость доставки?</span>
+                <span class="toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="a-wrap"><div class="a">
+                Стоимость зависит от маршрута и расстояния, типа груза (хрупкий/негабарит/опасный),
+                веса и объёма, требований к упаковке, погрузочно-разгрузочных работ, необходимости хранения
+                на складе и срочности. Итоговую цену подтверждаем после уточнения деталей.
+              </div></div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span class="q">Как оставить заявку на перевозку?</span>
+                <span class="toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="a-wrap"><div class="a">
+                Самый быстрый вариант — нажать «Оставить заявку» или «Узнать сейчас», заполнить маршрут и параметры груза.
+                Также можно позвонить/написать — менеджер задаст уточняющие вопросы и предложит подходящий вариант.
+              </div></div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span class="q">Как рассчитывается стоимость перевозки?</span>
+                <span class="toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="a-wrap"><div class="a">
+                Мы рассчитываем тариф по выбранному типу перевозки и маршруту, учитываем вес/объём и условия доставки.
+                Дополнительные услуги (погрузка, упаковка, склад, страхование) добавляются при необходимости.
+                Перед началом работ согласуем фиксированную стоимость или понятную формулу расчёта.
+              </div></div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span class="q">Можно ли заказать перевозку с грузчиками?</span>
+                <span class="toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="a-wrap"><div class="a">
+                Да. Организуем погрузочно-разгрузочные работы, при необходимости — паллетирование и упаковку.
+                Уточните адреса, этажность/лифт и примерный объём — подберём бригаду и технику.
+              </div></div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span class="q">Как обеспечивается сохранность груза во время перевозки?</span>
+                <span class="toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="a-wrap"><div class="a">
+                Используем подходящую упаковку/крепление, подбираем транспорт под тип груза, фиксируем условия в документах.
+                При необходимости предложим дополнительную упаковку, обрешётку и страхование.
+                На этапах загрузки/выгрузки контролируем соблюдение техники безопасности.
+              </div></div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span class="q">Сколько времени занимает доставка?</span>
+                <span class="toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="a-wrap"><div class="a">
+                Срок зависит от расстояния, погодных условий, графика загрузки/выгрузки и типа перевозки.
+                Заранее согласуем ориентировочный срок и держим связь по статусу.
+                Для срочных задач предложим ускоренный вариант.
+              </div></div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span class="q">Можно ли заказать перевозку в другой город?</span>
+                <span class="toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="a-wrap"><div class="a">
+                Да, выполняем межгород по РФ и СНГ. Подберём оптимальный маршрут и тип транспорта.
+                Сообщите города отправления/получения, вес/объём и сроки — сделаем расчёт.
+              </div></div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span class="q">Как происходит оплата услуг?</span>
+                <span class="toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="a-wrap"><div class="a">
+                Доступны варианты оплаты для физических и юридических лиц. Формат зависит от услуги и условий договора
+                (предоплата/по факту/по счёту). Все детали фиксируем заранее и предоставляем закрывающие документы.
+              </div></div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span class="q">Как контролируется процесс перевозки?</span>
+                <span class="toggle" aria-hidden="true"></span>
+              </summary>
+              <div class="a-wrap"><div class="a">
+                Менеджер сопровождает заказ: подтверждает этапы, время подачи/прибытия и остаётся на связи.
+                При необходимости сообщаем статус по контрольным точкам маршрута.
+                После завершения доставки подтверждаем получение и закрываем документы.
+              </div></div>
+            </details>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ====== PAGE: О КОМПАНИИ ====== -->
+  <div class="page" id="pageAbout">
+    <section class="page-wrap">
+      <div class="container">
+        <section class="page-card" aria-label="О компании">
+          <p class="page-kicker">О нас</p>
+          <h2 class="page-title">О компании</h2>
+
+          <p class="page-text">
+            Компания «Д. С. Веста» выполняет перевозку, перегрузку и хранение грузов разной сложности в Мурманске и по
+            Мурманской области. Мы делаем логистику понятной: от консультации до сдачи груза — без лишних рисков и сюрпризов.
+          </p>
+
+          <p class="page-subtitle">Как мы работаем с клиентами:</p>
+
+          <ul class="steps">
+            <li class="step">
+              <div class="step-num">1</div>
+              <div>
+                <h4>Понимаем задачу</h4>
+                <p>Вникаем в детали, уточняем условия, сроки и особенности груза — чтобы сразу предложить подходящее решение.</p>
+              </div>
+            </li>
+            <li class="step">
+              <div class="step-num">2</div>
+              <div>
+                <h4>Планируем и подбираем технику</h4>
+                <p>Согласуем маршрут, тип транспорта и ресурсы: от стандартной перевозки до тяжеловесных и негабаритных позиций.</p>
+              </div>
+            </li>
+            <li class="step">
+              <div class="step-num">3</div>
+              <div>
+                <h4>Организуем работы “под ключ”</h4>
+                <p>Погрузка/разгрузка, упаковка, крепление, доставка и при необходимости временное хранение — всё в одном месте.</p>
+              </div>
+            </li>
+            <li class="step">
+              <div class="step-num">4</div>
+              <div>
+                <h4>Контролируем безопасность</h4>
+                <p>Опытные специалисты, современная техника и контроль сохранности на каждом этапе.</p>
+              </div>
+            </li>
+            <li class="step">
+              <div class="step-num">5</div>
+              <div>
+                <h4>Держим сроки и прозрачные условия</h4>
+                <p>Честная стоимость без неожиданных доплат и понятные договорённости — вы заранее понимаете, что получите.</p>
+              </div>
+            </li>
+            <li class="step">
+              <div class="step-num">6</div>
+              <div>
+                <h4>На связи 24/7</h4>
+                <p>Оперативно отвечаем и сопровождаем перевозку — чтобы вам было спокойно на всём пути.</p>
+              </div>
+            </li>
+          </ul>
+
+          <div class="page-actions">
+            <button class="hero-btn" id="openContactAbout" type="button">Оставить заявку</button>
+            <button class="btn-secondary" id="backHomeFromAbout" type="button">На главную</button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+<!-- ====== PAGE: УСЛУГИ ====== -->
+<div class="page" id="pageServices">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card" aria-label="Услуги">
+        <p class="page-kicker">LOGISTIK • Сервис и контроль на каждом этапе</p>
+        <h2 class="page-title">Услуги</h2>
+
+        <div class="services-grid">
+          <!-- 1 -->
+          <div class="service-col">
+            <div class="service-col-head">
+              <div class="service-ico" aria-hidden="true">
+                <!-- truck -->
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 6h11v10H3V6Z" fill="#0b0b0d"/>
+                  <path d="M14 9h4l3 3v4h-7V9Z" fill="#0b0b0d"/>
+                  <circle cx="7" cy="18" r="2" fill="#0b0b0d"/>
+                  <circle cx="18" cy="18" r="2" fill="#0b0b0d"/>
+                </svg>
+              </div>
+              <h3 class="service-col-title">Типы<br/>перевозок</h3>
+            </div>
+
+            <ul class="service-list">
+              <li class="service-item" id="serviceMilitary" role="button" tabindex="0" aria-label="Открыть услугу: Военные переезды">
+                <span class="service-bullet"></span>
+                <p class="service-text">Военные переезды в другой город</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceDoor" role="button" tabindex="0" aria-label="Открыть услугу: Доставка грузов от двери до двери">
+                <span class="service-bullet"></span>
+                <p class="service-text">Доставка грузов от двери до двери</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceApartment" role="button" tabindex="0" aria-label="Открыть услугу: Квартирный переезд по России">
+                <span class="service-bullet"></span>
+                <p class="service-text">Квартирный переезд по России</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceOversize" role="button" tabindex="0" aria-label="Открыть услугу: Крупногабаритный транспорт">
+                <span class="service-bullet"></span>
+                <p class="service-text">Крупногабаритный транспорт</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceOffice" role="button" tabindex="0" aria-label="Открыть услугу: Офисные переезды">
+                <span class="service-bullet"></span>
+                <p class="service-text">Офисные переезды</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceBoards" role="button" tabindex="0">
+                <span class="service-bullet"></span>
+                <p class="service-text">Перевозка досок</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceFurniture" role="button" tabindex="0">
+                <span class="service-bullet"></span>
+                <p class="service-text">Перевозка мебели</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceMetal" role="button" tabindex="0">
+                <span class="service-bullet"></span>
+                <p class="service-text">Перевозка металла</p>
+                <span class="service-link">→</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 2 -->
+          <div class="service-col">
+            <div class="service-col-head">
+              <div class="service-ico" aria-hidden="true">
+                <!-- box -->
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 7l8-4 8 4-8 4-8-4Z" fill="#0b0b0d"/>
+                  <path d="M4 7v10l8 4V11L4 7Z" fill="#0b0b0d"/>
+                  <path d="M20 7v10l-8 4V11l8-4Z" fill="#0b0b0d"/>
+                </svg>
+              </div>
+              <h3 class="service-col-title">Доставка из<br/>магазинов</h3>
+            </div>
+
+            <ul class="service-list">
+              <li class="service-item" id="servicePickup" role="button" tabindex="0" aria-label="Открыть услугу: Забор товаров из ТЦ/складов/пунктов выдачи">
+                <span class="service-bullet"></span>
+                <p class="service-text">Забор товаров из ТЦ/складов/пунктов выдачи.</p>
+                <span class="service-link">→</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 3 -->
+          <div class="service-col">
+            <div class="service-col-head">
+              <div class="service-ico" aria-hidden="true">
+                <!-- tools -->
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14 7l3 3-7 7H7v-3l7-7Z" fill="#0b0b0d"/>
+                  <path d="M16 5l3 3" stroke="#0b0b0d" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h3 class="service-col-title">Услуги</h3>
+            </div>
+
+            <ul class="service-list">
+              <li class="service-item" id="serviceLoaders" role="button" tabindex="0" aria-label="Открыть услугу: Погрузчики, манипуляторы">
+                <span class="service-bullet"></span>
+                <p class="service-text">Погрузчики, манипуляторы</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceContainers" role="button" tabindex="0" aria-label="Открыть услугу: Перевозка и продажа контейнеров">
+                <span class="service-bullet"></span>
+                <p class="service-text">Перевозка и продажа контейнеров</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="servicePackaging" role="button" tabindex="0" aria-label="Открыть услугу: Упаковка, обрешётка">
+                <span class="service-bullet"></span>
+                <p class="service-text">Упаковка, обрешётка</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceWarehouse" role="button" tabindex="0" aria-label="Открыть услугу: Аренда отапливаемого склада">
+                <span class="service-bullet"></span>
+                <p class="service-text">Аренда отапливаемого склада</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceLoadingUnloading" role="button" tabindex="0" aria-label="Открыть услугу: Разгрузка, погрузка грузов">
+                <span class="service-bullet"></span>
+                <p class="service-text">Разгрузка, погрузка грузов</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="serviceStorage" role="button" tabindex="0" aria-label="Открыть услугу: Ответственное хранение">
+                <span class="service-bullet"></span>
+                <p class="service-text">Ответственное хранение</p>
+                <span class="service-link">→</span>
+              </li>
+            </ul>
+            </div>
+
+          <!-- 4 -->
+          <div class="service-col">
+            <div class="service-col-head">
+              <div class="service-ico" aria-hidden="true">
+                <!-- pin -->
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 22s7-4.4 7-11A7 7 0 1 0 5 11c0 6.6 7 11 7 11Z" fill="#0b0b0d"/>
+                  <circle cx="12" cy="11" r="2.5" fill="#060607"/>
+                </svg>
+              </div>
+              <h3 class="service-col-title">Направления</h3>
+            </div>
+
+            <ul class="service-list">
+              <li class="service-item" id="dirKarelia" role="button" tabindex="0" aria-label="Открыть: Грузоперевозки по Карелии">
+                <span class="service-bullet"></span>
+                <p class="service-text">Грузоперевозки по Карелии</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="dirMurmanskRegion" role="button" tabindex="0" aria-label="Открыть: Грузоперевозки по Мурманской области">
+                <span class="service-bullet"></span>
+                <p class="service-text">Грузоперевозки по Мурманской области</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="dirRussia" role="button" tabindex="0" aria-label="Открыть: Грузоперевозки по России">
+                <span class="service-bullet"></span>
+                <p class="service-text">Грузоперевозки по России</p>
+                <span class="service-link">→</span>
+              </li>
+
+              <li class="service-item" id="dirZato" role="button" tabindex="0" aria-label="Открыть: Доставка — все ЗАТО Мурманской области">
+                <span class="service-bullet"></span>
+                <p class="service-text">Доставка — все ЗАТО Мурманской области</p>
+                <span class="service-link">→</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="page-actions" style="margin-top:18px;">
+          <button class="hero-btn" id="openContactServices" type="button">Оставить заявку</button>
+          <button class="btn-secondary" id="backHomeFromServices" type="button">На главную</button>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ВОЕННЫЕ ПЕРЕЕЗДЫ (ВЫНЕСЕНА ОТДЕЛЬНО!) ====== -->
+<div class="page" id="pageMilitary">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Военные переезды в другой город">
+        <p class="page-kicker">LOGISTIK • СЕРВИС И КОНТРОЛЬ НА КАЖДОМ ЭТАПЕ</p>
+        <h2 class="page-title">ВОЕННЫЕ ПЕРЕЕЗДЫ В ДРУГОЙ ГОРОД</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: военный переезд">
+            <img src="img/military.jpg" alt="Военный переезд" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactMilitary" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromMilitary" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Военный переезд — это про сроки, аккуратность и чёткую организацию. Мы берём на себя весь процесс:
+                от подбора транспорта и упаковки до доставки по адресу в новом городе.
+              </p>
+              <p>
+                Работаем бережно с техникой, мебелью и личными вещами. Согласуем время, обеспечим фиксацию груза
+                и будем на связи на каждом этапе.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Почему нам доверяют</h3>
+          <p class="mil-sub">Собираем решение под ваш маршрут и объём — без лишней суеты.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Переезд “под ключ”: упаковка, погрузка, перевозка, разгрузка и расстановка — по запросу.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Опыт в переездах со строгими сроками: планируем маршрут и контролируем этапы выполнения.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Подбираем транспорт под объём имущества: от фургона до крупнотоннажной машины.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Индивидуальный подход: учитываем особенности семьи, адреса, подъёмы и удобное время доставки.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Безопасность и сохранность: крепление, маркировка, защитные материалы и аккуратная работа.</p>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как проходит переезд</h3>
+          <p class="mil-sub">Прозрачный процесс — вы понимаете, что происходит и когда будет результат.</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step">
+            <span class="mil-num">1</span>
+            <div>
+              <h4>Заявка и план</h4>
+              <p>Уточняем объём имущества, даты, адреса и пожелания. Быстро формируем понятный план работ.</p>
+            </div>
+          </div>
+          <div class="mil-step">
+            <span class="mil-num">2</span>
+            <div>
+              <h4>Упаковка</h4>
+              <p>Подбираем материалы и аккуратно упаковываем вещи, мебель и технику (по необходимости).</p>
+            </div>
+          </div>
+          <div class="mil-step">
+            <span class="mil-num">3</span>
+            <div>
+              <h4>Погрузка</h4>
+              <p>Загружаем с соблюдением правил, фиксируем груз и маркируем коробки для удобства распаковки.</p>
+            </div>
+          </div>
+          <div class="mil-step">
+            <span class="mil-num">4</span>
+            <div>
+              <h4>Доставка</h4>
+              <p>Везём по маршруту и держим связь. Прибываем в согласованный интервал.</p>
+            </div>
+          </div>
+          <div class="mil-step">
+            <span class="mil-num">5</span>
+            <div>
+              <h4>Разгрузка и помощь</h4>
+              <p>Разгружаем, заносим, при необходимости — помогаем с расстановкой и вывозом упаковки.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="mil-foot">
+          Мы делаем переезд максимально спокойным: берём организацию на себя, чтобы вы могли сосредоточиться на важных делах.
+          Напишите нам — рассчитаем стоимость и предложим оптимальный вариант под ваш переезд.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ДОСТАВКА ОТ ДВЕРИ ДО ДВЕРИ ====== -->
+<div class="page" id="pageDoor">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Доставка грузов от двери до двери">
+        <p class="page-kicker">LOGISTIK • СЕРВИС И КОНТРОЛЬ НА КАЖДОМ ЭТАПЕ</p>
+        <h2 class="page-title">ДОСТАВКА ГРУЗОВ ОТ ДВЕРИ<br/>ДО ДВЕРИ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: доставка от двери до двери">
+            <img src="img/door.jpg" alt="Доставка от двери до двери" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactDoor" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromDoor" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Доставка грузов от двери до двери — это удобное и надёжное решение для тех, кто ценит время и комфорт.
+                Мы организуем весь цикл: от забора груза у отправителя до передачи получателю по указанному адресу.
+              </p>
+              <p>
+                Берём на себя этапы погрузки, крепления, перевозки и разгрузки. Контролируем сроки и сохранность,
+                остаёмся на связи и даём понятный результат без лишней суеты.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Наши преимущества</h3>
+          <p class="mil-sub">Полный контроль, сохранность и удобство — на каждом этапе доставки.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Полный цикл доставки: от погрузки у отправителя до разгрузки у получателя.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Гибкость: перевозим грузы любых типов и объёмов, включая малогабаритные и крупные отправления.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Безопасность: надёжная упаковка и фиксация груза для предотвращения повреждений при транспортировке.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Точная логистика: оптимизация маршрутов для сокращения сроков доставки.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Контроль на всех этапах: мониторинг статуса груза и оперативная обратная связь с клиентом.</p>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как мы работаем</h3>
+          <p class="mil-sub">Понятные шаги — от заявки до отчёта.</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step">
+            <span class="mil-num">1</span>
+            <div>
+              <h4>Приём заявки</h4>
+              <p>Принимаем заявку и согласуем все детали доставки: адреса, сроки, параметры груза.</p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">2</span>
+            <div>
+              <h4>Забор груза</h4>
+              <p>Забираем груз по указанному адресу и подготавливаем к транспортировке (упаковка/крепление — по необходимости).</p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">3</span>
+            <div>
+              <h4>Перевозка</h4>
+              <p>Перевозим с контролем сохранности и соблюдением согласованных сроков.</p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">4</span>
+            <div>
+              <h4>Доставка</h4>
+              <p>Доставляем груз получателю с обязательной разгрузкой на месте (по условиям заявки).</p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">5</span>
+            <div>
+              <h4>Отчёт</h4>
+              <p>Подтверждаем выполнение услуги и остаёмся на связи для обратной связи и документов.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="mil-foot">
+          Доставка от двери до двери избавляет вас от необходимости самостоятельно организовывать погрузку,
+          транспортировку и разгрузку. Напишите нам — быстро рассчитаем стоимость и предложим оптимальный вариант.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / КВАРТИРНЫЙ ПЕРЕЕЗД ПО РОССИИ ====== -->
+<div class="page" id="pageApartment">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Квартирный переезд по России">
+        <p class="page-kicker">LOGISTIK • СЕРВИС И КОНТРОЛЬ НА КАЖДОМ ЭТАПЕ</p>
+        <h2 class="page-title">КВАРТИРНЫЙ ПЕРЕЕЗД ПО<br/>РОССИИ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: квартирный переезд">
+            <img src="img/apartment.jpg" alt="Квартирный переезд по России" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactApartment" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromApartment" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Квартирный переезд — это аккуратность, сроки и спокойствие. Мы организуем переезд по России “под ключ”:
+                от упаковки и погрузки до доставки и выгрузки в новом городе.
+              </p>
+              <p>
+                Бережно работаем с мебелью, техникой и личными вещами. Подбираем транспорт под объём, фиксируем груз
+                и держим связь на всём пути.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Что входит в услугу</h3>
+          <p class="mil-sub">Полный цикл работ — вы заранее понимаете процесс и результат.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Планирование переезда:</b> подбираем оптимальный маршрут и транспорт для перевозки.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Упаковка вещей:</b> плёнка, коробки, защитные уголки и обрешётка для хрупких предметов.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Разборка и сборка мебели:</b> аккуратно разбираем и собираем на новом месте (по заявке).</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Погрузка и разгрузка:</b> профессиональные грузчики работают бережно и слаженно.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Транспортировка:</b> надёжная фиксация груза, сохранность вещей в пути.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как происходит переезд</h3>
+          <p class="mil-sub">Понятные шаги — без лишней суеты.</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step"><span class="mil-num">1</span><div><h4>Оценка и план</h4><p>Оцениваем объём вещей и составляем план переезда.</p></div></div>
+          <div class="mil-step"><span class="mil-num">2</span><div><h4>Упаковка и маркировка</h4><p>Упаковываем и маркируем все предметы для безопасной транспортировки.</p></div></div>
+          <div class="mil-step"><span class="mil-num">3</span><div><h4>Перевозка</h4><p>Перевозим вещи по надёжному маршруту в выбранный город или регион.</p></div></div>
+          <div class="mil-step"><span class="mil-num">4</span><div><h4>Разгрузка и установка</h4><p>Разгружаем, распаковываем и устанавливаем мебель в новом помещении (по заявке).</p></div></div>
+        </div>
+
+        <p class="mil-foot">
+          Мы берём на себя организацию квартирного переезда по России, чтобы вы избежали стресса и лишних хлопот.
+          Оставьте заявку — быстро рассчитаем стоимость и предложим оптимальный вариант.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / КРУПНОГАБАРИТНЫЙ ТРАНСПОРТ ====== -->
+<div class="page" id="pageOversize">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Крупногабаритный транспорт">
+        <p class="page-kicker">LOGISTIK • СЕРВИС И КОНТРОЛЬ НА КАЖДОМ ЭТАПЕ</p>
+        <h2 class="page-title">КРУПНОГАБАРИТНЫЙ<br/>ТРАНСПОРТ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: крупногабаритный транспорт">
+            <img src="img/oversize.jpg" alt="Крупногабаритный транспорт" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactOversize" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromOversize" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Организуем перевозку крупногабаритных и негабаритных грузов: спецтехника, оборудование,
+                металлоконструкции и крупные изделия. Подбираем транспорт под габариты и вес.
+              </p>
+              <p>
+                Рассчитываем маршрут, при необходимости оформляем сопровождение и согласования.
+                Контролируем погрузку/разгрузку и крепление, держим связь на всём пути.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Почему нам доверяют</h3>
+          <p class="mil-sub">Решение под габарит, вес и маршрут — без лишней суеты.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Подбор транспорта: трал, платформа, низкорамник, борт — под задачу.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Маршрут и безопасность: учитываем мосты, высоту, покрытия, сезонность и погоду.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Крепление и фиксация: стропы, цепи, упоры, защита кромок — чтобы груз приехал без повреждений.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Организация “под ключ”: погрузка/разгрузка (кран/манипулятор при необходимости), контроль на этапах.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Прозрачные сроки и коммуникация: согласуем окно доставки и держим в курсе движения.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как проходит перевозка</h3>
+          <p class="mil-sub">Понятный процесс — вы понимаете, что происходит и когда будет результат.</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step"><span class="mil-num">1</span><div><h4>Запрос и расчёт</h4><p>Уточняем габариты, вес, точки погрузки/выгрузки, сроки. Подбираем транспорт и считаем стоимость.</p></div></div>
+          <div class="mil-step"><span class="mil-num">2</span><div><h4>Маршрут и подготовка</h4><p>Планируем безопасный путь с учётом ограничений. При необходимости — сопровождение и согласования.</p></div></div>
+          <div class="mil-step"><span class="mil-num">3</span><div><h4>Погрузка и крепление</h4><p>Организуем погрузку, размещаем груз и фиксируем его по правилам, чтобы исключить смещения.</p></div></div>
+          <div class="mil-step"><span class="mil-num">4</span><div><h4>Доставка</h4><p>Везём по маршруту и держим связь. Контролируем этапы и приезжаем в согласованный интервал.</p></div></div>
+          <div class="mil-step"><span class="mil-num">5</span><div><h4>Выгрузка и завершение</h4><p>Разгружаем, передаём груз, при необходимости — помощь с размещением/монтажной подачей.</p></div></div>
+        </div>
+
+        <p class="mil-foot">
+          Нужна перевозка крупногабаритного груза? Напишите нам — рассчитаем стоимость, подберём транспорт
+          и предложим оптимальный вариант под ваш маршрут.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ОФИСНЫЕ ПЕРЕЕЗДЫ ====== -->
+<div class="page" id="pageOffice">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Офисные переезды">
+        <p class="page-kicker">LOGISTIK • СЕРВИС И КОНТРОЛЬ НА КАЖДОМ ЭТАПЕ</p>
+        <h2 class="page-title">ОФИСНЫЕ ПЕРЕЕЗДЫ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: офисный переезд">
+            <img src="img/office.jpg" alt="Офисный переезд" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactOffice" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromOffice" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Офисный переезд — это сроки, аккуратность и чёткий план, чтобы команда не простаивала.
+                Мы перевозим мебель, оргтехнику, архив и оборудование — быстро и безопасно.
+              </p>
+              <p>
+                Организуем упаковку и маркировку, разбор/сбор мебели при необходимости, бережную погрузку и доставку
+                в согласованное окно. Всегда на связи и контролируем процесс на каждом этапе.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Почему нам доверяют</h3>
+          <p class="mil-sub">Собираем решение под график офиса и объём — без хаоса и потерь.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Минимум простоя: переезд в удобное время (вечер/выходные) — по согласованию.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Упаковка и маркировка: техника, документы и хрупкое — в защитных материалах.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Бережная погрузка: аккуратно работаем с оргтехникой, серверами, мебелью и стеклом.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Разбор/сбор мебели и расстановка: по плану кабинетов и рабочих зон (по запросу).</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Прозрачная координация: один ответственный, связь и контроль по этапам.</p>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как проходит переезд</h3>
+          <p class="mil-sub">Понятный процесс — вы заранее знаете, что и когда будет сделано.</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step">
+            <span class="mil-num">1</span>
+            <div>
+              <h4>Заявка и оценка</h4>
+              <p>Уточняем объём, адреса, этажность, лифты и сроки. Формируем план и смету.</p>
+            </div>
+          </div>
+          <div class="mil-step">
+            <span class="mil-num">2</span>
+            <div>
+              <h4>Подготовка и упаковка</h4>
+              <p>Подбираем материалы, упаковываем технику и хрупкое, маркируем коробки и зоны.</p>
+            </div>
+          </div>
+          <div class="mil-step">
+            <span class="mil-num">3</span>
+            <div>
+              <h4>Демонтаж</h4>
+              <p>Разбираем мебель/стеллажи при необходимости, подготавливаем к перевозке.</p>
+            </div>
+          </div>
+          <div class="mil-step">
+            <span class="mil-num">4</span>
+            <div>
+              <h4>Погрузка и доставка</h4>
+              <p>Загружаем, фиксируем, доставляем в согласованный интервал и держим связь.</p>
+            </div>
+          </div>
+          <div class="mil-step">
+            <span class="mil-num">5</span>
+            <div>
+              <h4>Разгрузка и расстановка</h4>
+              <p>Разгружаем, заносим, расставляем по кабинетам/плану. Собираем мебель (по запросу).</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="mil-foot">
+          Нужен офисный переезд без нервов? Напишите нам — рассчитаем стоимость, подберём команду и организуем переезд
+          в удобное для вашего бизнеса время.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ПЕРЕВОЗКА ДОСОК ====== -->
+<div class="page" id="pageBoards">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Перевозка досок">
+        <p class="page-kicker">LOGISTIK • КРЕПЛЕНИЕ И ЗАЩИТА ГРУЗА</p>
+        <h2 class="page-title">ПЕРЕВОЗКА ДОСОК</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: перевозка досок">
+            <img src="img/boards.jpg" alt="Перевозка досок и пиломатериалов" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactBoards" type="button">
+                Оставить заявку
+              </button>
+              <button class="btn-secondary" id="backToServicesFromBoards" type="button">
+                Назад к услугам
+              </button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Перевозка досок и пиломатериалов требует аккуратности и правильного крепления.
+                Мы подбираем транспорт под длину и объём, надёжно фиксируем груз
+                и защищаем его от повреждений.
+              </p>
+              <p>
+                Работаем с частными и коммерческими заказами:
+                доставка на объект, склад или производство — точно в согласованное время.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Почему нам доверяют</h3>
+          <p class="mil-sub">Собираем решение под длину, объём и условия доставки.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Подбор транспорта: борт, тент, длинномер, манипулятор — под длину и объём.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Фиксация: ремни, прокладки, упоры — чтобы исключить смещение и повреждения.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Защита от погоды: укрытие, плёнка, тент при необходимости.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Согласуем подачу и выгрузку в удобное время — без простоев на объекте.</p>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как проходит перевозка</h3>
+          <p class="mil-sub">Понятный процесс — вы понимаете, что происходит и когда будет результат.</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step">
+            <span class="mil-num">1</span>
+            <div>
+              <h4>Запрос и расчёт</h4>
+              <p>Уточняем длину, объём, адреса и сроки. Подбираем транспорт и считаем стоимость.</p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">2</span>
+            <div>
+              <h4>Подача машины</h4>
+              <p>Приезжаем в согласованное время, готовим место погрузки и крепёж.</p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">3</span>
+            <div>
+              <h4>Погрузка и фиксация</h4>
+              <p>Размещаем груз, прокладываем защиту, затягиваем ремни и проверяем крепления.</p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">4</span>
+            <div>
+              <h4>Доставка</h4>
+              <p>Доставляем по маршруту, держим связь и приезжаем в согласованный интервал.</p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">5</span>
+            <div>
+              <h4>Выгрузка</h4>
+              <p>Разгружаем и передаём груз. При необходимости — помогаем с размещением.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="mil-foot">
+          Нужна перевозка досок или пиломатериалов?
+          Оставьте заявку — рассчитаем стоимость и подберём оптимальный вариант доставки.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ПЕРЕВОЗКА МЕБЕЛИ ====== -->
+<div class="page" id="pageFurniture">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Перевозка мебели">
+        <p class="page-kicker">LOGISTIK • АККУРАТНО И БЕЗОПАСНО</p>
+        <h2 class="page-title">ПЕРЕВОЗКА МЕБЕЛИ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: перевозка мебели">
+            <img src="img/furniture.jpg" alt="Перевозка мебели" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactFurniture" type="button">
+                Оставить заявку
+              </button>
+              <button class="btn-secondary" id="backToServicesFromFurniture" type="button">
+                Назад к услугам
+              </button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Компания «Демет Логистика» предлагает профессиональные услуги по перевозке мебели
+                для квартир, офисов и магазинов в Мурманске и по России.
+                Мы обеспечиваем аккуратную транспортировку мебели,
+                исключая риски повреждений независимо от сложности задачи и расстояния.
+              </p>
+              <p>
+                Перевозим как отдельные предметы, так и полный комплект мебели —
+                с разборкой, упаковкой, погрузкой и установкой на новом месте.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Что мы перевозим</h3>
+          <p class="mil-sub">Работаем с мебелью любых типов и размеров.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Корпусная и мягкая мебель: шкафы, диваны, кровати, столы и стулья.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Офисная мебель: рабочие столы, шкафы для документов, кресла и сейфы.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Крупногабаритные предметы: кухонные гарнитуры, стенки, витрины и мебельные комплексы.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Разобранная и собранная мебель любых размеров.</p>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как мы работаем</h3>
+          <p class="mil-sub">Пошаговый и понятный процесс — без лишних рисков.</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step">
+            <span class="mil-num">1</span>
+            <div>
+              <h4>Оценка и подготовка</h4>
+              <p>
+                Специалисты осматривают мебель, определяют способ транспортировки
+                и подбирают защитные материалы.
+              </p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">2</span>
+            <div>
+              <h4>Упаковка и разборка</h4>
+              <p>
+                Используем плёнку, картон и другие материалы.
+                При необходимости выполняем разборку и сборку мебели.
+              </p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">3</span>
+            <div>
+              <h4>Погрузка и перевозка</h4>
+              <p>
+                Аккуратно загружаем мебель, надёжно фиксируем её в автомобиле
+                и доставляем по адресу.
+              </p>
+            </div>
+          </div>
+
+          <div class="mil-step">
+            <span class="mil-num">4</span>
+            <div>
+              <h4>Разгрузка и установка</h4>
+              <p>
+                По прибытии мебель выгружается, распаковывается
+                и устанавливается на нужное место.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Почему выбирают нас</h3>
+          <p class="mil-sub">Надёжность, опыт и аккуратная работа.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Аккуратность и бережное обращение — без сколов, царапин и повреждений.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Опытные грузчики — профессиональная команда для тяжёлых и хрупких предметов.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Современный транспорт с надёжными креплениями и просторным кузовом.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Гибкость и доступность — услуги “под ключ” по разумной стоимости.</p>
+          </div>
+        </div>
+
+        <p class="mil-foot">
+          С «Демет Логистика» перевозка мебели становится простой, безопасной и удобной.
+          Мы гарантируем, что ваша мебель прибудет на место в идеальном состоянии и точно в срок.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ПЕРЕВОЗКА МЕТАЛЛА ====== -->
+<div class="page" id="pageMetal">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Перевозка металла">
+        <p class="page-kicker">LOGISTIK • ФИКСАЦИЯ И БЕЗОПАСНОСТЬ</p>
+        <h2 class="page-title">ПЕРЕВОЗКА МЕТАЛЛА</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo">
+            <img src="img/metal.jpg" alt="Перевозка металла">
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactMetal">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromMetal">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Перевозка металла требует специализированного транспорта,
+                надёжной фиксации груза и строгого соблюдения правил безопасности.
+                Мы выполняем доставку металлоизделий в Мурманске и по регионам РФ.
+              </p>
+              <p>
+                Работаем с листовым прокатом, трубами, арматурой,
+                балками, конструкциями и другими металлическими изделиями.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Наши преимущества</h3>
+          <p class="mil-sub">Контроль и надёжность на каждом этапе.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Платформы, борта и спецтехника для перевозки металла.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Надёжная фиксация для предотвращения смещения и повреждений.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Опытные водители и логисты с учётом особенностей груза.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Соблюдение всех норм и требований безопасности.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Срочные и плановые перевозки любых объёмов.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как мы работаем</h3>
+          <p class="mil-sub">Понятный и прозрачный процесс.</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step"><span class="mil-num">1</span><div><h4>Консультация</h4><p>Определяем тип металла, объём и условия перевозки.</p></div></div>
+          <div class="mil-step"><span class="mil-num">2</span><div><h4>Подбор транспорта</h4><p>Выбираем машину и маршрут под габариты и вес.</p></div></div>
+          <div class="mil-step"><span class="mil-num">3</span><div><h4>Фиксация</h4><p>Подготавливаем и надёжно закрепляем груз.</p></div></div>
+          <div class="mil-step"><span class="mil-num">4</span><div><h4>Доставка</h4><p>Оперативно доставляем с контролем на всех этапах.</p></div></div>
+          <div class="mil-step"><span class="mil-num">5</span><div><h4>Разгрузка</h4><p>Передаём груз в удобное для клиента время.</p></div></div>
+        </div>
+
+        <p class="mil-foot">
+          Нужна перевозка металла любой сложности?
+          Оставьте заявку — рассчитаем стоимость и предложим оптимальное решение.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ЗАБОР ТОВАРОВ ИЗ ТЦ/СКЛАДОВ/ПВЗ ====== -->
+<div class="page" id="pagePickup">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Забор товаров из ТЦ, складов и пунктов выдачи">
+        <p class="page-kicker">LOGISTIK • ОПЕРАТИВНО И АККУРАТНО</p>
+        <h2 class="page-title">ЗАБОР ТОВАРОВ<br/>ИЗ ТЦ / СКЛАДОВ / ПВЗ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: забор товаров">
+            <img src="img/pickup.jpg" alt="Забор товаров из ТЦ/складов/ПВЗ" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactPickup" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromPickup" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Заберём ваш заказ из торгового центра, со склада поставщика или из пункта выдачи
+                и доставим туда, куда нужно (адрес/склад/объект) — по согласованию.
+              </p>
+              <p>
+                Согласуем время и правила выдачи, проверим комплектность по накладной,
+                аккуратно разместим груз в машине и закрепим для безопасной перевозки.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Что входит</h3>
+          <p class="mil-sub">Понятно и без лишней суеты — берём организацию на себя.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Забор из ТЦ/склада/ПВЗ по адресу и в согласованное время.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Ожидание/оформление выдачи (по условиям точки выдачи).</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Проверка по документам: количество мест, внешний осмотр упаковки.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Аккуратная погрузка и надёжная фиксация груза в кузове.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Доставка на склад, объект или по адресу получателя.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как проходит</h3>
+          <p class="mil-sub">5 шагов — от заявки до подтверждения.</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step"><span class="mil-num">1</span><div><h4>Заявка</h4><p>Адрес забора, адрес доставки, габариты/вес, время, контакты.</p></div></div>
+          <div class="mil-step"><span class="mil-num">2</span><div><h4>Согласование</h4><p>Уточняем условия выдачи и документы, назначаем окно забора.</p></div></div>
+          <div class="mil-step"><span class="mil-num">3</span><div><h4>Забор</h4><p>Приезжаем, оформляем выдачу, принимаем груз по местам.</p></div></div>
+          <div class="mil-step"><span class="mil-num">4</span><div><h4>Погрузка</h4><p>Аккуратно загружаем и фиксируем, чтобы исключить повреждения.</p></div></div>
+          <div class="mil-step"><span class="mil-num">5</span><div><h4>Доставка</h4><p>Доставляем, разгружаем (если нужно), подтверждаем выполнение.</p></div></div>
+        </div>
+
+        <p class="mil-foot">
+          Нужен быстрый забор и доставка? Нажмите «Оставить заявку» — уточним детали и рассчитаем стоимость.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ПОГРУЗЧИКИ, МАНИПУЛЯТОРЫ ====== -->
+<div class="page" id="pageLoaders">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Погрузчики, манипуляторы">
+        <p class="page-kicker">LOGISTIK • ТЕХНИКА И ОПЫТНЫЕ ОПЕРАТОРЫ</p>
+        <h2 class="page-title">ПОГРУЗЧИКИ, МАНИПУЛЯТОРЫ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: погрузчики и манипуляторы">
+            <img src="img/loaders.jpg" alt="Погрузчики и манипуляторы" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactLoaders" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromLoaders" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Предоставляем профессиональные услуги погрузчиков и манипуляторов для работ любой сложности
+                в Мурманске и области. Оперативно подаём технику, соблюдаем технику безопасности и бережно
+                работаем с грузом.
+              </p>
+              <p>
+                Подходит для складов, стройплощадок, терминалов, монтажных работ и перемещения
+                нестандартных/тяжёлых грузов. Уточните задачу — подберём технику под вес, габариты и условия.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Наши возможности</h3>
+          <p class="mil-sub">Техника для быстрой и безопасной погрузки/перемещения.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Погрузчики:</b> работа с паллетами, коробами и крупногабаритными грузами на складах и площадках.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Манипуляторы:</b> перемещение тяжёлых и нестандартных грузов, стройматериалов, оборудования и контейнеров.</p>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Где применяются наши услуги</h3>
+          <p class="mil-sub">Работаем на объектах разного типа.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Погрузка и разгрузка транспорта на складах и терминалах.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Монтаж и демонтаж оборудования на строительных объектах.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Перемещение контейнеров и крупногабаритных конструкций.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Работа в ограниченных пространствах, где нужна высокая манёвренность.</p>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Почему выбирают нас</h3>
+          <p class="mil-sub">Сервис, безопасность и соблюдение сроков.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Современная техника:</b> надёжный парк с разной грузоподъёмностью под задачу.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Опытные операторы:</b> точность, аккуратность и соблюдение требований безопасности.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Гибкие условия:</b> почасовая аренда или долгосрочное сотрудничество.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Минимальные сроки:</b> быстрое выполнение задач и оперативная подача техники.</p>
+          </div>
+        </div>
+
+        <p class="mil-foot">
+          Нужны погрузчики или манипулятор? Нажмите «Заказать» — уточним задачу, подберём технику и рассчитаем стоимость.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ПЕРЕВОЗКА И ПРОДАЖА КОНТЕЙНЕРОВ ====== -->
+<div class="page" id="pageContainers">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Перевозка и продажа контейнеров">
+        <p class="page-kicker">LOGISTIK • СЕРВИС И КОНТРОЛЬ НА КАЖДОМ ЭТАПЕ</p>
+        <h2 class="page-title">ПЕРЕВОЗКА И ПРОДАЖА<br/>КОНТЕЙНЕРОВ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: контейнеры">
+            <img src="img/containers.jpg" alt="Перевозка и продажа контейнеров" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactContainers" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromContainers" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Компания «Демет Логистика» предоставляет полный спектр услуг по перевозке и продаже контейнеров
+                различного типа и назначения в Мурманске. Обеспечиваем быструю и безопасную доставку по России
+                и предлагаем решения для бизнеса и частных клиентов.
+              </p>
+              <p>
+                Подбираем контейнер под задачу, согласуем маршрут и сроки, организуем погрузку/разгрузку и
+                контролируем сохранность на всех этапах.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Услуги перевозки контейнеров</h3>
+          <p class="mil-sub">Транспортируем контейнеры любых размеров и конфигураций, включая:</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Стандартные 20- и 40-футовые контейнеры.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Контейнеры для тяжеловесных и нестандартных грузов.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p>Специализированные контейнеры: рефрижераторные и контейнеры с открытым верхом.</p>
+          </div>
+        </div>
+
+        <p class="mil-foot">
+          Перевозка выполняется с соблюдением технических норм и требований безопасности.
+          Наши специалисты контролируют погрузку, разгрузку и доставку, гарантируя сохранность контейнера и его содержимого.
+        </p>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Продажа контейнеров</h3>
+          <p class="mil-sub">Новые и б/у контейнеры для различных задач:</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Хранение:</b> организация складов и временных хранилищ.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Транспортировка:</b> перевозка грузов по территории России и за её пределы.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Переоборудование:</b> контейнеры для бытовок, офисов или технических помещений.</p>
+          </div>
+        </div>
+
+        <p class="mil-foot">
+          Мы подбираем контейнеры по размерам, состоянию и специфике использования, предлагая надёжные решения по доступным ценам.
+        </p>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Почему выбирают нас</h3>
+          <p class="mil-sub">Надёжность, скорость и понятные условия — без лишней суеты.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Полный цикл услуг:</b> от подбора/продажи до доставки контейнера на объект.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Гибкие условия:</b> подберём контейнер и метод перевозки под ваши задачи.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Качество и надёжность:</b> контейнеры в хорошем техническом состоянии.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Оперативность:</b> быстрая доставка в любую точку региона и страны.</p>
+          </div>
+        </div>
+
+        <p class="mil-foot">
+          Демет Логистика — надёжный партнёр в сфере контейнерных перевозок и продаж.
+          Оставьте заявку — уточним детали и предложим оптимальное решение.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / УПАКОВКА, ОБРЕШЁТКА ====== -->
+<div class="page" id="pagePackaging">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Упаковка, обрешётка">
+        <p class="page-kicker">LOGISTIK • ЗАЩИТА ГРУЗА И СОХРАННОСТЬ</p>
+        <h2 class="page-title">УПАКОВКА,<br/>ОБРЕШЁТКА</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: упаковка и обрешётка">
+            <img src="img/packaging.jpg" alt="Упаковка и обрешётка грузов" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactPackaging" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromPackaging" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Компания «Демет Логистика» предлагает услуги профессиональной упаковки и обрешётки грузов
+                для безопасной транспортировки и хранения в Мурманске.
+                Мы знаем, как важно защитить товар от повреждений, поэтому используем надёжные материалы
+                и проверенные технологии.
+              </p>
+              <p>
+                Подбираем решение под тип груза: хрупкое, тяжёлое, нестандартное.
+                Готовим к перевозке так, чтобы груз доехал в целости независимо от расстояния и условий.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Наши услуги включают</h3>
+          <p class="mil-sub">Подготовка груза под перевозку и склад.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Упаковка грузов:</b> плёнка, коробки, воздушно-пузырчатая плёнка и другие материалы для защиты от пыли, влаги и ударов.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Обрешётка:</b> прочный каркас из дерева или металла для хрупких и тяжеловесных грузов — максимальная защита при перевозке.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Паллетирование:</b> упаковка и фиксация грузов на паллетах для удобства погрузки и разгрузки.</p>
+          </div>
+          <div class="mil-item">
+            <span class="mil-check">✓</span>
+            <p><b>Индивидуальные решения:</b> разработка упаковки под нестандартные размеры и типы грузов.</p>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Для чего нужна упаковка и обрешётка</h3>
+          <p class="mil-sub">Снижаем риски и упрощаем логистику.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Защита от механических повреждений во время транспортировки.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Сохранение товара от влаги, пыли и внешних воздействий.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Удобство складирования и перемещения груза.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Соответствие требованиям внутренних и международных перевозок.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Почему выбирают нас</h3>
+          <p class="mil-sub">Материалы, опыт и аккуратная подготовка.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Качественные материалы:</b> используем надёжные и сертифицированные упаковочные решения.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Опытные специалисты:</b> подготавливаем груз с учётом его особенностей.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Гибкий подход:</b> работаем и с небольшими отправками, и с крупногабаритными грузами.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Экономия времени:</b> быстро и эффективно готовим товар к отправке.</p></div>
+        </div>
+
+        <p class="mil-foot">
+          Демет Логистика — это гарантия надёжной упаковки и обрешётки для вашего груза.
+          Мы позаботимся о каждой детали, чтобы товар прибыл в идеальном состоянии.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / АРЕНДА ОТАПЛИВАЕМОГО СКЛАДА ====== -->
+<div class="page" id="pageWarehouse">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Аренда отапливаемого склада">
+        <p class="page-kicker">LOGISTIK • ХРАНЕНИЕ В КОМФОРТНЫХ УСЛОВИЯХ</p>
+        <h2 class="page-title">АРЕНДА ОТАПЛИВАЕМОГО<br/>СКЛАДА</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: отапливаемый склад">
+            <img src="img/warehouse.jpg" alt="Отапливаемый склад" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactWarehouse" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromWarehouse" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Предлагаем аренду современных отапливаемых складских помещений в Мурманске для хранения товаров и грузов,
+                которым важны температурные условия. Подбираем площадь под вашу задачу — от небольших секций до крупных зон.
+              </p>
+              <p>
+                Склад — это стабильность, безопасность и удобная логистика: хранение, приёмка, выдача и сопровождение по запросу.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Особенности наших складов</h3>
+          <p class="mil-sub">Комфортные условия и понятная организация.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Отапливаемые помещения:</b> поддержание стабильной температуры для защиты грузов от холода и влаги.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Современная инфраструктура:</b> удобные зоны погрузки/разгрузки, стеллажные системы (по возможности).</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Надёжная безопасность:</b> контроль доступа и охрана (по условиям объекта).</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><b>Гибкие площади:</b> аренда как небольших секций, так и крупных складских помещений.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Кому подходит аренда</h3>
+          <p class="mil-sub">Когда важна сохранность и температурный режим.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Компаниям с температурочувствительными товарами (продукты, бытовая химия, электроника и др.).</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Бизнесу для сезонного хранения продукции в тёплых помещениях.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Производственным предприятиям для временного складирования готовой продукции.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Преимущества работы с нами</h3>
+          <p class="mil-sub">Прозрачные условия и поддержка.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Гибкие условия аренды и понятное ценообразование.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Удобное расположение и транспортная доступность.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Возможность организации погрузочно-разгрузочных работ.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Профессиональная поддержка на всех этапах сотрудничества.</p></div>
+        </div>
+
+        <p class="mil-foot">
+          Нужен тёплый склад под хранение? Нажмите «Заказать» — уточним срок, объём и подберём подходящую площадь.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ПОГРУЗКА И РАЗГРУЗКА ====== -->
+<div class="page" id="pageLoadingUnloading">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Погрузка и разгрузка грузов">
+
+        <p class="page-kicker">LOGISTIK • АККУРАТНО И БЕЗОПАСНО</p>
+        <h2 class="page-title">ПОГРУЗКА И<br/>РАЗГРУЗКА ГРУЗОВ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo">
+            <img src="img/loading.jpg" alt="Погрузка и разгрузка грузов">
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactLoadingUnloading" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromLoadingUnloading" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>Профессиональные услуги по погрузке и разгрузке грузов любой сложности в Мурманске и области.</p>
+              <p>Работаем аккуратно, соблюдаем технику безопасности и обеспечиваем сохранность груза на каждом этапе.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Наши услуги включают</h3>
+          <p class="mil-sub">Решения под задачи любого уровня сложности</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Ручную и механизированную погрузку/разгрузку</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Работу с нестандартными и крупногабаритными грузами</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Размещение и закрепление грузов в транспорте</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Такелажные работы для тяжёлых и хрупких предметов</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как мы работаем</h3>
+          <p class="mil-sub">Понятные шаги — быстро и безопасно</p>
+        </div>
+
+        <div class="mil-steps">
+          <div class="mil-step"><span class="mil-num">1</span><div><h4>Оценка груза</h4><p>Определяем объём, вес и особенности работ.</p></div></div>
+          <div class="mil-step"><span class="mil-num">2</span><div><h4>Подбор команды</h4><p>Подбираем специалистов и оборудование под задачу.</p></div></div>
+          <div class="mil-step"><span class="mil-num">3</span><div><h4>Выполнение работ</h4><p>Погрузка/разгрузка с соблюдением техники безопасности.</p></div></div>
+        </div>
+
+        <p class="mil-foot">
+          Оставьте заявку — быстро рассчитаем стоимость и предложим оптимальный вариант под ваш груз.
+        </p>
+
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: УСЛУГА / ОТВЕТСТВЕННОЕ ХРАНЕНИЕ ====== -->
+<div class="page" id="pageStorage">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Ответственное хранение">
+        <p class="page-kicker">LOGISTIK • СКЛАД И КОНТРОЛЬ</p>
+        <h2 class="page-title">ОТВЕТСТВЕННОЕ<br/>ХРАНЕНИЕ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: ответственное хранение">
+            <img src="img/storage.jpg" alt="Ответственное хранение на складе" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactStorage" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromStorage" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Ответственное хранение — это приёмка, размещение, учёт и выдача груза на оборудованных складских площадях.
+                Подойдёт для бизнеса и частных клиентов: временно или на долгий срок.
+              </p>
+              <p>
+                При необходимости организуем погрузочно-разгрузочные работы, паллетирование, подготовку к отгрузке и доставку.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Что входит</h3>
+          <p class="mil-sub">Понятные условия и контроль на каждом этапе.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Приём и учёт груза с документацией.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Размещение с учётом габаритов и условий хранения.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Контроль сохранности на всём сроке хранения.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Оперативная выдача и подготовка к отгрузке/доставке.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Кому подходит</h3>
+          <p class="mil-sub">Для разных задач и объёмов.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Бизнесу — хранение товаров/продукции/материалов.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Сезонным поставкам и временным излишкам.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Частным клиентам — вещи, мебель, оборудование.</p></div>
+        </div>
+
+        <p class="mil-foot">
+          Нужны условия и стоимость хранения? Нажмите «Оставить заявку» — уточним объём, срок и рассчитаем цену.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: НАПРАВЛЕНИЯ / КАРЕЛИЯ ====== -->
+<div class="page" id="pageDirKarelia">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Грузоперевозки по Карелии">
+        <p class="page-kicker">LOGISTIK • НАПРАВЛЕНИЯ</p>
+        <h2 class="page-title">ГРУЗОПЕРЕВОЗКИ<br/>ПО КАРЕЛИИ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: Карелия">
+            <img src="img/dir-karelia.jpg" alt="Грузоперевозки по Карелии" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactDirKarelia" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromDirKarelia" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>
+                Организуем грузоперевозки по всей территории Карелии — от городов до труднодоступных районов.
+                Подбираем транспорт под объём, сроки и особенности груза.
+              </p>
+              <p>
+                Доставка “от двери до двери”, сборные грузы, помощь с упаковкой и погрузкой — по запросу.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Почему нам доверяют</h3>
+          <p class="mil-sub">Северная логистика — аккуратно, безопасно и в срок.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Знание региональных маршрутов, включая сложные участки.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Подбор транспорта под разные виды грузов.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Опыт доставки в условиях северного климата.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Гибкая логистика: разовые доставки и регулярные рейсы.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Что перевозим</h3>
+          <p class="mil-sub">Под задачи бизнеса и частных клиентов.</p>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Стройматериалы и оборудование.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Товары для магазинов, бизнеса и производств.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Личные вещи при переездах по городам и районам Карелии.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Сельхозпродукцию и продовольственные товары.</p></div>
+        </div>
+
+        <p class="mil-foot">
+          Напишите нам — рассчитаем стоимость, предложим оптимальный маршрут и сроки доставки.
+        </p>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: НАПРАВЛЕНИЯ / МУРМАНСКАЯ ОБЛАСТЬ ====== -->
+<div class="page" id="pageDirMurmanskRegion">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Грузоперевозки по Мурманской области">
+        <p class="page-kicker">LOGISTIK • НАПРАВЛЕНИЯ</p>
+        <h2 class="page-title">ГРУЗОПЕРЕВОЗКИ<br/>ПО МУРМАНСКОЙ ОБЛАСТИ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: Мурманская область">
+            <img src="img/dir-murmansk-region.jpg" alt="Грузоперевозки по Мурманской области" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactDirMurmanskRegion" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromDirMurmanskRegion" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>Компания Демет Логистика предоставляет услуги по грузоперевозкам по всей территории Мурманской области.</p>
+              <p>Мы знаем особенности северного региона, его климат и дорожные условия, поэтому готовы предложить надёжные и эффективные решения для транспортировки грузов любой сложности.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Что делает нас надёжным партнёром</h3>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Большой опыт работы на маршрутах Мурманской области, включая труднодоступные населённые пункты</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Современный автопарк, оборудованный для зимних условий и тяжёлых дорог</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Круглогодичная доставка даже при суровых погодных условиях</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Индивидуальный подход к маршрутам и срокам доставки</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:18px;">
+          <h3 class="mil-h">Наши услуги</h3>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Перевозка строительных материалов, техники и оборудования</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Транспортировка продуктов питания и товаров первой необходимости</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Грузоперевозки для бизнеса: регулярные и разовые отправки</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Переезды и доставка личных вещей по городам и посёлкам области</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:18px;">
+          <h3 class="mil-h">Преимущества работы с нами</h3>
+        </div>
+
+        <div class="mil-list">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Оптимизация маршрутов для сокращения времени и затрат</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Полная сохранность груза благодаря опытной команде и контролю на всех этапах</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Доступные тарифы и прозрачные условия сотрудничества</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Доставка точно в срок, независимо от сложности маршрута</p></div>
+        </div>
+
+        <div class="mil-text" style="margin-top:16px;">
+          <p>Демет Логистика — это ваш надёжный партнёр для перевозок по Мурманской области. Мы доставим ваш груз оперативно и безопасно, преодолевая любые расстояния и климатические вызовы региона.</p>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: НАПРАВЛЕНИЯ / РОССИЯ ====== -->
+<div class="page" id="pageDirRussia">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Грузоперевозки по России">
+        <p class="page-kicker">LOGISTIK • НАПРАВЛЕНИЯ</p>
+        <h2 class="page-title">ГРУЗОПЕРЕВОЗКИ<br/>ПО РОССИИ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: Россия">
+            <img src="img/dir-russia.jpg" alt="Грузоперевозки по России" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactDirRussia" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromDirRussia" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>Компания Демет Логистика предлагает надёжные и эффективные услуги по доставке грузов по всей территории России.</p>
+              <p>Мы работаем с любыми расстояниями и маршрутами — от крупных мегаполисов до удалённых регионов страны.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Широкая география перевозок</h3>
+          <p class="mil-sub">Север или Юг, Дальний Восток или Центральная Россия — подберём оптимальный маршрут под ваш груз.</p>
+        </div>
+
+        <div class="mil-text" style="margin-top:10px;">
+          <p>Мы используем проверенные логистические решения, чтобы доставка была быстрой, безопасной и экономически выгодной.</p>
+        </div>
+
+        <div class="mil-split" style="margin-top:18px;">
+          <h3 class="mil-h">Наши возможности</h3>
+          <p class="mil-sub">Закроем задачу “под ключ”.</p>
+        </div>
+
+        <div class="mil-list" style="margin-top:12px;">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Перевозка любых типов грузов: от малогабаритных посылок до тяжеловесного промышленного оборудования.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Индивидуальные логистические решения для бизнеса и частных лиц.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Сборные грузы, регулярные отправки и срочная доставка по запросу.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Контроль груза на всех этапах: от погрузки до передачи получателю.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Почему выбирают Демет Логистика?</h3>
+          <p class="mil-sub">Опыт, транспорт и прозрачные условия.</p>
+        </div>
+
+        <div class="mil-list" style="margin-top:12px;">
+          <div class="mil-item"><span class="mil-check">✓</span><p><strong>Опыт и надёжность:</strong> многолетний опыт работы на российских дорогах и в сложных климатических условиях.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><strong>Современный автопарк:</strong> транспорт под любые задачи — от малотоннажных машин до фур и спецтехники.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><strong>Оптимизация сроков и маршрутов:</strong> подбираем лучшие логистические решения для каждого клиента.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p><strong>Гибкая ценовая политика:</strong> доступные тарифы и прозрачные условия сотрудничества без скрытых платежей.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:22px;">
+          <h3 class="mil-h">Как заказать услугу?</h3>
+          <p class="mil-sub">Оставьте заявку — мы всё согласуем.</p>
+        </div>
+
+        <div class="mil-text" style="margin-top:10px;">
+          <p>Мы принимаем заявки на доставку по России и обеспечиваем оперативное выполнение перевозок любой сложности. Всё, что нужно — обсудить детали груза и согласовать маршрут.</p>
+          <p style="margin-top:10px;">Демет Логистика — надёжный партнёр для грузоперевозок по всей России. Мы преодолеем тысячи километров, чтобы ваш груз прибыл в нужное место в целости и точно в срок.</p>
+        </div>
+
+      </section>
+    </div>
+  </section>
+</div>
+
+<!-- ====== PAGE: НАПРАВЛЕНИЯ / ЗАТО ====== -->
+<div class="page" id="pageDirZato">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card service-detail" aria-label="Доставка — все ЗАТО Мурманской области">
+        <p class="page-kicker">LOGISTIK • НАПРАВЛЕНИЯ</p>
+        <h2 class="page-title">ДОСТАВКА — ВСЕ ЗАТО<br/>МУРМАНСКОЙ ОБЛАСТИ</h2>
+
+        <div class="mil-grid">
+          <div class="mil-photo" aria-label="Фото: ЗАТО">
+            <img src="img/dir-zato.jpg" alt="Доставка в ЗАТО Мурманской области" />
+          </div>
+
+          <div class="mil-card">
+            <div class="mil-actions">
+              <button class="hero-btn" id="openContactDirZato" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backToServicesFromDirZato" type="button">Назад к услугам</button>
+            </div>
+
+            <div class="mil-text">
+              <p>Организуем доставку грузов во все ЗАТО Мурманской области: от разовых отправок до регулярных рейсов.</p>
+              <p>Заранее согласуем маршрут, сроки и требования по пропускам/документам — чтобы всё прошло без задержек.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mil-split">
+          <h3 class="mil-h">Как работаем</h3>
+          <p class="mil-sub">С учётом режимных требований и сроков.</p>
+        </div>
+
+        <div class="mil-list" style="margin-top:12px;">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Проверяем условия въезда и подсказываем, какие данные нужны для оформления.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Подбираем транспорт под груз: фургон/тент/борт/крупнотоннаж — по задаче.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Доставка “от двери до двери” с согласованным временным окном.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:18px;">
+          <h3 class="mil-h">Что чаще всего доставляем</h3>
+          <p class="mil-sub">Для бизнеса и частных клиентов.</p>
+        </div>
+
+        <div class="mil-list" style="margin-top:12px;">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Стройматериалы, инструмент, оборудование и запчасти.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Товары для магазинов, складов и предприятий.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Личные вещи при переездах, мебель и бытовая техника.</p></div>
+        </div>
+
+        <div class="mil-split" style="margin-top:18px;">
+          <h3 class="mil-h">Дополнительные опции</h3>
+          <p class="mil-sub">По необходимости.</p>
+        </div>
+
+        <div class="mil-list" style="margin-top:12px;">
+          <div class="mil-item"><span class="mil-check">✓</span><p>Погрузка/разгрузка, такелаж, помощь грузчиков — по запросу.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Упаковка, паллетирование, крепление груза и фотофиксация.</p></div>
+          <div class="mil-item"><span class="mil-check">✓</span><p>Контроль на маршруте и оперативная связь по статусу доставки.</p></div>
+        </div>
+
+        <div class="mil-text" style="margin-top:14px;">
+          <p>Оставьте заявку — уточним пункт назначения, параметры груза и предложим оптимальный вариант доставки в ЗАТО.</p>
+        </div>
+
+      </section>
+    </div>
+  </section>
+</div>
+
+  <!-- ====== PAGE: КАК МЫ РАБОТАЕМ ====== -->
+  <div class="page" id="pageHow">
+    <section class="page-wrap">
+      <div class="container">
+        <section class="page-card" aria-label="Как мы работаем">
+          <p class="page-kicker">Процесс</p>
+          <h2 class="page-title">Как мы работаем</h2>
+
+          <p class="page-text">
+            На странице «Как мы работаем» мы по шагам показываем, как проходит сотрудничество с клиентами —
+            чтобы процесс был прозрачным и понятным на каждом этапе.
+          </p>
+
+          <p class="page-subtitle">Этапы нашей работы:</p>
+
+          <ul class="steps">
+            <li class="step">
+              <div class="step-num">1</div>
+              <div>
+                <h4>Консультация и оценка</h4>
+                <p>После получения вашей заявки мы связываемся с вами, уточняем детали и оцениваем объём работ, а также возможные риски.</p>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step-num">2</div>
+              <div>
+                <h4>Планирование и подготовка</h4>
+                <p>Составляем оптимальный план выполнения работ, подбираем подходящий транспорт и необходимые ресурсы для задачи.</p>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step-num">3</div>
+              <div>
+                <h4>Погрузка и упаковка</h4>
+                <p>Наши специалисты аккуратно организуют забор и погрузку груза, при необходимости выполняют упаковку и надёжное крепление для сохранности при перевозке.</p>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step-num">4</div>
+              <div>
+                <h4>Транспортировка</h4>
+                <p>Осуществляем перевозку по заранее согласованному маршруту, соблюдая сроки и требования безопасности.</p>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step-num">5</div>
+              <div>
+                <h4>Доставка и разгрузка</h4>
+                <p>По прибытии в пункт назначения выполняем разгрузку и передаём груз заказчику.</p>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step-num">6</div>
+              <div>
+                <h4>Обратная связь</h4>
+                <p>После завершения работ связываемся с вами, чтобы получить отзыв и оценку качества оказанных услуг.</p>
+              </div>
+            </li>
+          </ul>
+
+          <p class="page-text" style="margin-top:14px; margin-bottom:0;">
+            Мы делаем процесс перевозки максимально удобным и понятным для клиентов, поддерживая высокий уровень сервиса на каждом этапе.
+          </p>
+
+          <div class="page-actions">
+            <button class="hero-btn" id="openContactHow" type="button">Оставить заявку</button>
+            <button class="btn-secondary" id="backHomeFromHow" type="button">На главную</button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+<!-- ====== PAGE: КОНТАКТЫ ====== -->
+<div class="page" id="pageContacts">
+  <section class="page-wrap">
+    <div class="container">
+      <section class="page-card" aria-label="Контакты">
+        <p class="page-kicker">Связь</p>
+        <h2 class="page-title">Контакты</h2>
+
+        <p class="page-text">
+          Напишите или позвоните — быстро ответим, уточним детали и предложим оптимальное решение по перевозке.
+        </p>
+
+        <div class="contacts-grid">
+          <!-- ЛЕВАЯ КОЛОНКА -->
+          <div class="contacts-panel">
+            <p class="contacts-h">Наши контакты</p>
+
+            <ul class="contact-list">
+              <li class="contact-row">
+                <div class="contact-ico" aria-hidden="true">
+                  <!-- phone -->
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 16.92V20A2 2 0 0 1 19.82 22a19.8 19.8 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.07 12.8 19.8 19.8 0 0 1 0 4.18 2 2 0 0 1 2 2h3.09a2 2 0 0 1 2 1.72c.12.86.3 1.7.54 2.5a2 2 0 0 1-.45 2.11L6.09 9.91a16 16 0 0 0 8 8l1.58-1.09a2 2 0 0 1 2.11-.45c.8.24 1.64.42 2.5.54A2 2 0 0 1 22 16.92Z" fill="#0b0b0d"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <div class="contact-name">Телефон</div>
+                  <p class="contact-val">
+                    <a class="contact-link" href="tel:+79991234567">+7 (999) 123-45-67</a>
+                  </p>
+                </div>
+              </li>
+
+              <li class="contact-row">
+                <div class="contact-ico" aria-hidden="true">
+                  <!-- telegram -->
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21.8 4.6 3.4 11.7c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.4c.2.6.1.8.8.8.6 0 .9-.3 1.2-.6l2.2-2.1 4.5 3.3c.8.4 1.4.2 1.6-.8l3.1-14.8c.3-1.2-.4-1.7-1.3-1.2Z" fill="#0b0b0d"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <div class="contact-name">Telegram</div>
+                  <p class="contact-val">
+                    <a class="contact-link" href="https://t.me/LOGISTIK" target="_blank" rel="noopener">@LOGISTIK</a>
+                  </p>
+                </div>
+              </li>
+
+              <li class="contact-row">
+                <div class="contact-ico" aria-hidden="true">
+                  <!-- mail -->
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6h16v12H4V6Z" fill="#0b0b0d"/>
+                    <path d="M4 7l8 6 8-6" stroke="#060607" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <div class="contact-name">Email</div>
+                  <p class="contact-val">
+                    <a class="contact-link" href="mailto:info@logistik.ru">info@logistik.ru</a>
+                  </p>
+                </div>
+              </li>
+
+              <li class="contact-row">
+                <div class="contact-ico" aria-hidden="true">
+                  <!-- pin -->
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22s7-4.4 7-11A7 7 0 1 0 5 11c0 6.6 7 11 7 11Z" fill="#0b0b0d"/>
+                    <circle cx="12" cy="11" r="2.5" fill="#060607"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <div class="contact-name">Адрес</div>
+                  <p class="contact-val">Россия, г. Мурманск, ул. Примерная, 10</p>
+                </div>
+              </li>
+
+              <li class="contact-row">
+                <div class="contact-ico" aria-hidden="true">
+                  <!-- clock -->
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="9" fill="#0b0b0d"/>
+                    <path d="M12 7v5l3 2" stroke="#060607" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <div class="contact-name">График</div>
+                  <p class="contact-val">Пн–Пт: 09:00–18:00 · Сб–Вс: по заявке</p>
+                </div>
+              </li>
+            </ul>
+
+            <div class="page-actions" style="margin-top:14px;">
+              <button class="hero-btn" id="openContactFromContacts" type="button">Оставить заявку</button>
+              <button class="btn-secondary" id="backHomeFromContacts" type="button">На главную</button>
+            </div>
+          </div>
+
+          <!-- ПРАВАЯ КОЛОНКА (карта) -->
+          <div class="map-panel" aria-label="Карта">
+            <iframe
+              title="Карта Мурманск"
+              src="https://yandex.ru/map-widget/v1/?ll=33.074981%2C68.970665&z=11&pt=33.074981%2C68.970665%2Cpm2rdm"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
+  <!-- MODAL: ТАРИФЫ -->
+  <div class="modal" id="tariffsModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="1"></div>
+
+    <div class="modal-dialog tariffs-dialog" role="dialog" aria-modal="true" aria-label="Наши тарифы">
+      <div class="modal-head">
+        <div>
+          <h3 class="modal-title">Наши тарифы</h3>
+          <p class="modal-sub">Примерные расценки. Точную стоимость уточняйте по маршруту, типу груза и объёму.</p>
+        </div>
+        <button class="modal-close" type="button" aria-label="Закрыть" data-close="1"></button>
+      </div>
+
+      <div class="modal-body tariffs-body">
+        <div class="modal-section">
+          <p class="modal-h">Перевозки</p>
+
+          <table class="price-table" aria-label="Тарифы на перевозки">
+            <thead>
+              <tr>
+                <th>Направление / услуга</th>
+                <th>Цена</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>в черте Санкт-Петербурга</td><td>от 1500 руб/час</td></tr>
+              <tr><td>Санкт-Петербург – Петрозаводск</td><td>от 2 руб/кг</td></tr>
+              <tr><td>Санкт-Петербург – Мурманск и Мурманская область</td><td>от 6 руб/кг</td></tr>
+              <tr><td>Москва – Санкт-Петербург</td><td>от 7 руб/кг</td></tr>
+              <tr><td>Москва – Мурманск и Мурманская область</td><td>от 8 руб/кг</td></tr>
+              <tr><td>Москва – Петрозаводск</td><td>от 5 руб/кг</td></tr>
+              <tr><td>в черте Мурманска</td><td>от 1500 руб/час</td></tr>
+              <tr><td>Мурманск – Петрозаводск</td><td>от 3 руб/кг</td></tr>
+              <tr><td>Мурманск – Санкт-Петербург</td><td>от 5 руб/кг</td></tr>
+              <tr><td>Мурманск – Мурманская область</td><td>от 60 руб/км</td></tr>
+              <tr><td>в черте Петрозаводска</td><td>от 1500 руб/час</td></tr>
+              <tr><td>Петрозаводск – Мурманск и Мурманская область</td><td>от 5 руб/кг</td></tr>
+              <tr><td>Санкт-Петербург – Карелия</td><td>от 3 руб/кг</td></tr>
+              <tr><td>Петрозаводск – Карелия</td><td>от 2 руб/кг</td></tr>
+              <tr><td>Перевозка пустого контейнера Санкт-Петербург – Мурманск</td><td>20ф от 35тр/шт, 40ф от 75тр/шт</td></tr>
+              <tr><td>Перевозка гружёного контейнера Санкт-Петербург – Мурманск</td><td>20ф от 75тр/шт, 40ф от 145тр/шт</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="modal-section">
+          <p class="modal-h">Складские услуги</p>
+
+          <table class="price-table" aria-label="Складские услуги">
+            <thead>
+              <tr>
+                <th>Услуга</th>
+                <th>Цена</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Погрузочно-разгрузочные работы</td><td>от 200 руб/паллет</td></tr>
+              <tr><td>Хранение товара на складе</td><td>от 15 руб/сутки место</td></tr>
+              <tr><td>Паллетирование</td><td>от 200 руб/паллет</td></tr>
+              <tr><td>Затарка/вытарка контейнеров</td><td>от 5 тр</td></tr>
+              <tr><td>Выгрузка крытого вагона</td><td>от 25 тр</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: СВЯЗАТЬСЯ -->
+  <div class="modal" id="contactModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="1"></div>
+
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="Связаться">
+      <div class="modal-head">
+        <div>
+          <h3 class="modal-title">Связаться</h3>
+          <p class="modal-sub">Выберите удобный способ — позвонить или написать в Telegram.</p>
+        </div>
+        <button class="modal-close" type="button" aria-label="Закрыть" data-close="1"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="contact-actions">
+          <a class="contact-btn primary" href="tel:+79646808606" aria-label="Позвонить по номеру +79646808606">
+            ФЕДЕРАЛЬНЫЙ +7 964 680-86-06
+          </a>
+
+          <a class="contact-btn secondary" href="tel:608608" aria-label="Позвонить по городскому номеру 608-608">
+            ГОРОДСКОЙ 608-608
+          </a>
+
+          <a class="contact-btn secondary" href="#" id="tgLink" aria-label="Написать в Telegram">
+            НАПИСАТЬ В TELEGRAM
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE MENU PANEL ===== -->
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <div class="mobile-backdrop" id="closeBurger"></div>
+
+  <div class="mobile-panel" role="dialog" aria-label="Меню">
+    <button class="pill" type="button" data-go="home">Главная</button>
+    <button class="pill" type="button" data-go="about">О компании</button>
+    <button class="pill" type="button" data-go="services">Услуги</button>
+    <button class="pill" type="button" data-go="how">Как мы работаем</button>
+    <button class="pill" type="button" data-go="contacts">Контакты</button>
+
+    <button class="cta" type="button" id="openContactBurger">Оставить заявку</button>
+  </div>
+</div>
+
+  <script>
+    // ===== MODAL HELPERS =====
+    function openModal(modal){
+      if (!modal) return;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(modal){
+      if (!modal) return;
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    }
+    function bindModalClose(modal){
+      modal.addEventListener('click', (e) => {
+        if (e.target && e.target.dataset && e.target.dataset.close === "1") closeModal(modal);
+      });
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const opened = document.querySelector('.modal.is-open');
+      if (opened) closeModal(opened);
+    });
+
+    const tariffsModal = document.getElementById('tariffsModal');
+    document.getElementById('openTariffs')?.addEventListener('click', () => openModal(tariffsModal));
+    bindModalClose(tariffsModal);
+
+    const contactModal = document.getElementById('contactModal');
+    document.getElementById('openContactTop')?.addEventListener('click', () => openModal(contactModal));
+    document.getElementById('openContactBottom')?.addEventListener('click', () => openModal(contactModal));
+    document.getElementById('openContactAbout')?.addEventListener('click', () => openModal(contactModal));
+    document.getElementById('openContactHow')?.addEventListener('click', () => openModal(contactModal));
+    bindModalClose(contactModal);
+
+    // ===== FAQ: открывать только один =====
+    const faqItems = document.querySelectorAll('.faq details.faq-item');
+    faqItems.forEach((d) => {
+      d.addEventListener('toggle', () => {
+        if (!d.open) return;
+        faqItems.forEach((other) => { if (other !== d) other.open = false; });
+      });
+    });
+
+    // ===== PAGES & TABS =====
+    const pages = [
+      'home','about','services','how','contacts',
+      'pickup',
+      'military','door','apartment','oversize','office','boards','furniture','metal',
+      'loaders','containers','packaging','warehouse','loadingUnloading','storage',
+      'dirKarelia','dirMurmanskRegion','dirRussia','dirZato'
+    ].reduce((acc, name) => {
+      acc[name] = document.getElementById(
+        'page' + name[0].toUpperCase() + name.slice(1)
+      );
+      return acc;
+    }, {});
+
+    const tabs = ['home','about','services','how','contacts']
+      .reduce((acc, name) => {
+        acc[name] = document.getElementById(
+          'tab' + name[0].toUpperCase() + name.slice(1)
+        );
+        return acc;
+      }, {});
+
+    // ===== CORE NAV =====
+    function setActiveTab(name){
+      Object.values(tabs).forEach(b => b?.classList.remove('is-active'));
+      tabs[name]?.classList.add('is-active');
+    }
+
+    function showPage(name){
+      Object.values(pages).forEach(p => p?.classList.remove('is-active'));
+      pages[name]?.classList.add('is-active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function go(tab, page = tab){
+      setActiveTab(tab);
+      showPage(page);
+    }
+
+    // ===== DEFAULT =====
+    go('home');
+
+    // ===== TOP TABS =====
+    Object.keys(tabs).forEach(name => {
+      tabs[name]?.addEventListener('click', () => go(name));
+    });
+
+    // ===== BACK TO HOME BUTTONS =====
+    [
+      'backHomeFromAbout',
+      'backHomeFromHow',
+      'backHomeFromContacts',
+      'backHomeFromServices'
+    ].forEach(id => {
+      document.getElementById(id)
+        ?.addEventListener('click', () => go('home'));
+    });
+
+    // ===== CONTACT MODAL =====
+    [
+      'openContactTop',
+      'openContactBottom',
+      'openContactAbout',
+      'openContactHow',
+      'openContactServices',
+      'openContactFromContacts'
+    ].forEach(id => {
+      document.getElementById(id)
+        ?.addEventListener('click', () => openModal(contactModal));
+    });
+
+    // ===== SERVICE HELPER =====
+    function bindService(serviceId, pageName){
+      const service = document.getElementById(serviceId);
+      if (!service) return;
+
+      const open = () => go('services', pageName);
+
+      service.addEventListener('click', open);
+      service.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          open();
+        }
+      });
+
+      document.getElementById(
+        `backToServicesFrom${pageName[0].toUpperCase() + pageName.slice(1)}`
+      )?.addEventListener('click', () => go('services'));
+
+      document.getElementById(
+        `openContact${pageName[0].toUpperCase() + pageName.slice(1)}`
+      )?.addEventListener('click', () => openModal(contactModal));
+    }
+
+    // ===== SERVICES =====
+    bindService('serviceMilitary', 'military');
+    bindService('serviceDoor', 'door');
+    bindService('serviceApartment', 'apartment');
+    bindService('serviceOversize', 'oversize');
+    bindService('serviceOffice', 'office');
+    bindService('serviceBoards', 'boards');
+    bindService('serviceFurniture', 'furniture');
+    bindService('serviceMetal', 'metal');
+    bindService('servicePickup', 'pickup');
+    bindService('serviceLoaders', 'loaders');
+    bindService('serviceContainers', 'containers');
+    bindService('servicePackaging', 'packaging');
+    bindService('serviceWarehouse', 'warehouse');
+    bindService('serviceLoadingUnloading', 'loadingUnloading');
+    bindService('serviceStorage', 'storage');
+    bindService('dirKarelia', 'dirKarelia');
+    bindService('dirMurmanskRegion', 'dirMurmanskRegion');
+    bindService('dirRussia', 'dirRussia');
+    bindService('dirZato', 'dirZato');
+
+    // LOGO -> HOME
+    const brandHome = document.getElementById('brandHome');
+
+    brandHome?.addEventListener('click', () => go('home'));
+    brandHome?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        go('home');
+      }
+    });
+
+    // ===== BURGER MENU =====
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeBurger = document.getElementById('closeBurger');
+
+    function openBurger(){
+      burgerBtn?.classList.add('is-open');
+      mobileMenu?.classList.add('is-open');
+      mobileMenu?.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeBurgerMenu(){
+      burgerBtn?.classList.remove('is-open');
+      mobileMenu?.classList.remove('is-open');
+      mobileMenu?.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    }
+
+    burgerBtn?.addEventListener('click', () => {
+      if (mobileMenu?.classList.contains('is-open')) closeBurgerMenu();
+      else openBurger();
+    });
+
+    closeBurger?.addEventListener('click', closeBurgerMenu);
+
+    // клик по пунктам меню -> go(...) и закрыть бургер
+    document.querySelectorAll('#mobileMenu [data-go]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const page = btn.getAttribute('data-go');
+        if (page) go(page);
+        closeBurgerMenu();
+      });
+    });
+
+    // кнопка "оставить заявку" внутри бургера
+    document.getElementById('openContactBurger')?.addEventListener('click', () => {
+      closeBurgerMenu();
+      openModal(contactModal);
+    });
+
+  </script>
+</body>
+</html>
